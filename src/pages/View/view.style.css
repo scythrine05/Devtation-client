@@ -1,0 +1,38 @@
+.view-wrapper {
+  display: flex;
+  justify-content: center;
+  padding: 20px;
+}
+
+.view-container {
+  padding: 20px;
+}
+
+.view-display{
+  width: 700px;
+  height: 400px;
+  border: 2px solid #000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 2px;
+}
+
+.view-options{
+  height: 50px;
+  width: 1000px;
+  border: 2px solid #000;
+  margin-top: 10px;
+  display: flex;
+  align-items: center;
+  padding: 20px;
+}
+
+.view-desc{
+  border: 2px solid #000;
+  margin-top: 10px;
+  min-height: 100px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
