@@ -3,14 +3,14 @@ import { useState } from "react";
 import "./getStarted.style.css";
 
 import Modal from "/src/components/Modal";
-import AuthTemplate from "/src/templates/Auth";
+import AuthTemplate from "/src/components/Modal/templates/Auth";
 import Button from "/src/components/Button";
 
 export default function GetStarted() {
   const [showModal, setShowModal] = useState(false);
 
   const toggleModal = () => {
-    setShowModal(!showModal);
+    setShowModal(() => !showModal);
   };
 
   return (

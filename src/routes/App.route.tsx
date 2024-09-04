@@ -1,13 +1,13 @@
 import { RouteObject } from "react-router-dom";
 
-import Landing from "./landing";
+import Landing from "./Landing.route";
 import Home from "/src/pages/Home";
 import Account from "/src/pages/Account";
 import Setting from "/src/pages/Setting";
 import View from "/src/pages/View";
 import New from "/src/pages/New";
 
-import ProtectedRoute from "./protected";
+import ProtectedRoute from "./Protected.route";
 
 const routes: RouteObject[] = [
   {
@@ -19,7 +19,7 @@ const routes: RouteObject[] = [
         element: <ProtectedRoute children={<Home />} />,
       },
       {
-        path: "account",
+        path: "account/:identifier",
         element: <ProtectedRoute children={<Account />} />,
       },
       {

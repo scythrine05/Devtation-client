@@ -1,12 +1,12 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import "./sidebar.style.css";
 
 import Button from "/src/components/Button";
 
-import { useAuth } from "/src/hooks/useAuth";
+import { logout } from "/src/apis/firebase";
 
 export default function Sidebar() {
-  const { logout } = useAuth();
+  const navigate = useNavigate();
 
   return (
     <div className="sidebar">
@@ -17,7 +17,7 @@ export default function Sidebar() {
           </Link>
         </li>
         <li>
-          <Link to="/account">
+          <Link to="/account/youraccount">
             <span className="links_name">Your Account</span>
           </Link>
         </li>
@@ -29,7 +29,13 @@ export default function Sidebar() {
           </Link>
         </li>
         <li>
-          <Button onClick={logout}>
+          <Button
+            onClick={() =>
+              logout()
+                .then(() => navigate("/"))
+                .catch((err) => console.error(err))
+            }
+          >
             <span className="links_name">Logout</span>
           </Button>
         </li>
