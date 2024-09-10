@@ -1,16 +1,14 @@
-import React from 'react';
-import './card.style.css';
+import React from "react";
+import "./card.style.css";
+import { CardData } from "/src/types";
 
-interface CardProps {
-  title: string;
-  description: string;
-}
-
-const Card: React.FC<CardProps> = ({ title, description }) => {
+const Card: React.FC<CardData> = ({ title, author, tags }) => {
   return (
     <div className="card">
       <h3>{title}</h3>
-      <p>{description}</p>
+      <div>
+        {tags && tags.map((item, index) => <span key={index}>{item}</span>)}
+      </div>
     </div>
   );
 };

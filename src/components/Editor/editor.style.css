@@ -1,0 +1,27 @@
+.flex {
+    display: flex;
+  }
+  .justify-center {
+    justify-content: center;
+  }
+  .items-center {
+    align-items: center;
+  }
+  .h-screen {
+    height: 100vh;
+  }
+  .w-96 {
+    width: 24rem;
+  }
+  .p-4 {
+    padding: 1rem;
+  }
+  .bg-white {
+    background-color: white;
+  }
+  .shadow-md {
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+  .rounded-lg {
+    border-radius: 0.5rem;
+  }

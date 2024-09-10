@@ -4,7 +4,6 @@ import {
   signInWithEmailAndPassword,
   reauthenticateWithCredential,
   EmailAuthProvider,
-  updateProfile,
   signInWithPopup,
   GoogleAuthProvider,
   GithubAuthProvider,
@@ -13,11 +12,11 @@ import {
 } from "firebase/auth";
 import { auth } from "/src/configs/firebase";
 
-import { saveToken, logoutUser, createUser, removeUserById } from "./custom";
+import { setToken, logoutUser, createUser, removeUserById } from "./custom";
 import { SignInData, SignUpData } from "/src/types";
 
 export const signUpWithEmail = async (userData: SignUpData) => {
-  const { email, password, name } = userData;
+  const { email, password } = userData;
   try {
     const userCredential = await createUserWithEmailAndPassword(
       auth,
@@ -26,9 +25,6 @@ export const signUpWithEmail = async (userData: SignUpData) => {
     );
     const user = userCredential.user;
     const _id_token_ = await user.getIdToken();
-    if (user) {
-      await updateProfile(user, { displayName: name });
-    }
     const response = await createUser(userData, _id_token_);
     return response;
   } catch (error) {
@@ -45,7 +41,7 @@ export const signInWithEmail = async (userData: SignInData) => {
       password
     );
     const _id_token_ = await userCredential.user.getIdToken();
-    const response = await saveToken(_id_token_);
+    const response = await setToken(_id_token_);
     return response;
   } catch (error) {
     throw error;

@@ -7,7 +7,7 @@ const isRequired = (field: string, optionalFields: string[]): boolean => {
 export const validateForm = async (
   values: Record<string, any>,
   modifiedFields: Record<string, boolean> | null,
-  rules: ValidationRule[],
+  rules: ValidationRule[] | null,
   optionalFields: string[] | null = []
 ): Promise<FormErrors> => {
   const errors: FormErrors = {};
@@ -20,6 +20,7 @@ export const validateForm = async (
     }
   });
 
+  if (!rules) return errors;
   for (const rule of rules) {
     const value = values[rule.field];
     if (modifiedFields && !modifiedFields[rule.field]) {

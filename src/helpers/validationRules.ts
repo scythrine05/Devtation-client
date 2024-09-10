@@ -1,5 +1,5 @@
 import { ValidationRule } from "../types";
-import { checkUsernameExists, checkEmailExists } from "/src/apis/custom";
+import { verifyUniqueUsername, verifyUniqueEmail } from "/src/apis/custom";
 
 export const validEmail: ValidationRule = {
   field: "email",
@@ -16,11 +16,33 @@ export const passwordMinLength: ValidationRule = {
 export const usernameExists: ValidationRule = {
   field: "username",
   message: "Username already exists",
-  validate: async (value) => !(await checkUsernameExists(value)),
+  validate: async (value) => !(await verifyUniqueUsername(value)),
 };
 
 export const emailExists: ValidationRule = {
   field: "email",
   message: "Email already exists",
-  validate: async (value) => !(await checkEmailExists(value)),
+  validate: async (value) => !(await verifyUniqueEmail(value)),
+};
+
+export const isValidLink: ValidationRule = {
+  field: "link",
+  message: "Invalid URL",
+  validate: (value) => {
+    const urlPattern = /^(https?:\/\/)[^\s/$.?#].[^\s]*$/;
+    return urlPattern.test(value.trim());
+  },
+};
+
+export const isImageFile: ValidationRule = {
+  field: "file",
+  message: "File must be an image (JPEG, PNG, GIF)",
+  validate: (value) => {
+    const allowedFileTypes = ["image/jpeg", "image/png", "image/gif"];
+
+    if (typeof value === "object" && value !== null && "type" in value) {
+      return allowedFileTypes.includes((value as File).type);
+    }
+    return false;
+  },
 };

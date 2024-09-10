@@ -14,7 +14,8 @@ import {
 import { verifyRecaptchaToken } from "/src/apis/custom";
 
 export default function Info() {
-  const [formData, setFormData] = useState({
+  
+  const [formData, setFormData] = useState<SignUpData>({
     username: "",
     name: "",
     email: "",

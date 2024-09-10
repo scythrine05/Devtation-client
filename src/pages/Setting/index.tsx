@@ -1,4 +1,4 @@
-import { useState, useEffect, ChangeEvent } from "react";
+import { useState, useEffect, useCallback, ChangeEvent } from "react";
 
 import Modal from "/src/components/Modal";
 import DeleteAccount from "../../components/Modal/templates/Alert/DeleteAccount";
@@ -9,7 +9,9 @@ import { useAuth } from "/src/hooks/useAuth";
 import { validateForm } from "/src/helpers/validateForm";
 import { usernameExists } from "/src/helpers/validationRules";
 
-export default function Setting() {
+import withDataFetching from "/src/hoc/withDataFetching";
+
+const Setting = ({ data }: ProfileData | any) => {
   const { user } = useAuth();
   const [isEditing, setIsEditing] = useState<boolean>(false);
   const [formData, setFormData] = useState<ProfileData>({
@@ -22,7 +24,6 @@ export default function Setting() {
   const [modifiedFields, setModifiedFields] = useState<Record<string, boolean>>(
     {}
   );
-  const [loading, setLoading] = useState<boolean>(true);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [showModal, setShowModal] = useState(false);
 
@@ -36,20 +37,7 @@ export default function Setting() {
   const authRules = [usernameExists];
 
   useEffect(() => {
-    const loadUserData = async () => {
-      try {
-        setLoading(true);
-        const id = user ? user.uid : user;
-        const data = await getUserById(user, id);
-        setFormData(data);
-      } catch (err) {
-        console.error(err);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    loadUserData();
+    setFormData(data);
   }, []);
 
   useEffect(() => {
@@ -80,44 +68,33 @@ export default function Setting() {
 
   const handleCancel = () => {
     setIsEditing(false);
-    const loadUserData = async () => {
-      try {
-        setLoading(true);
-        const id = user ? user.uid : user;
-        const data = await getUserById(user, id);
-        setFormData(data);
-      } catch (err) {
-        console.error(err);
-      } finally {
-        setLoading(false);
-        setErrors({});
-      }
-    };
-
-    loadUserData();
+    setFormData(initialFormData);
+    setErrors({});
   };
 
   const handleUpdate = async () => {
-    const validationErrors = await validateForm(
-      formData,
-      modifiedFields,
-      authRules,
-      null
-    );
-    setErrors(validationErrors);
-    if (Object.keys(validationErrors).length === 0) {
-      const response = await updateUserById(formData, user);
-      setIsEditing(false);
-      return response;
+    try {
+      const validationErrors = await validateForm(
+        formData,
+        modifiedFields,
+        authRules,
+        null
+      );
+      setErrors(validationErrors);
+      if (Object.keys(validationErrors).length === 0) {
+        const response = await updateUserById(formData, user);
+        setIsEditing(false);
+        return response;
+      }
+      return;
+    } catch (err) {
+      throw err;
     }
-    return;
   };
 
   const toggleModal = () => {
     setShowModal(() => !showModal);
   };
-
-  if (loading) return <div>Loading...</div>;
 
   return (
     <div>
@@ -176,4 +153,18 @@ export default function Setting() {
       </Modal>
     </div>
   );
-}
+};
+
+const NewComponent = withDataFetching<ProfileData>(Setting);
+
+const SettingWithData = () => {
+  const { user } = useAuth();
+  const fetchData = useCallback(() => {
+    const id = user ? user.uid : user;
+    return getUserById(user, id);
+  }, [user]);
+
+  return <NewComponent fetchData={fetchData} />;
+};
+
+export default SettingWithData;

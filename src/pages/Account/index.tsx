@@ -1,47 +1,22 @@
-import { useState, useEffect } from "react";
-import Grid from "/src/containers/Grid";
+import React, { useCallback } from "react";
 import { useParams } from "react-router";
 import { useAuth } from "/src/hooks/useAuth";
-import { getUserAccount } from "/src/apis/custom";
-import { AccountData } from "/src/types";
+import { getUserAccount, getProjectsByUserId } from "/src/apis/custom";
+import { AccountData, ProjectData } from "/src/types";
+import withDataFetching from "/src/hoc/withDataFetching";
+import Grid from "/src/components/Grid";
 
-export default function Account() {
-  const { identifier } = useParams<{ identifier: string }>();
-  const [loading, setLoading] = useState<boolean>(true);
-  const [accountData, setAccountData] = useState<AccountData | null>(null);
-  const { user } = useAuth(); // Get the current authenticated user
+interface CombinedData {
+  userData: AccountData;
+  projectsData: ProjectData[];
+}
 
-  useEffect(() => {
-    const loadUserData = async () => {
-      setLoading(true);
+interface AccountProps {
+  data: CombinedData[];
+}
 
-      try {
-        const data = await getUserAccount(
-          identifier === "youraccount" ? user : null,
-          identifier !== "youraccount" ? identifier || null : null
-        );
-        setAccountData(data);
-      } catch (err) {
-        console.error("Failed to load user data:", err);
-        setAccountData(null);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    if (identifier) {
-      loadUserData();
-    }
-  }, [identifier, user]);
-
-  if (loading) {
-    return <div>Loading...</div>;
-  }
-
-  if (!accountData) {
-    return <div>No account data found.</div>;
-  }
-
+const Account: React.FC<AccountProps> = ({ data }) => {
+  const { userData, projectsData } = data[0];
   return (
     <div>
       <div>
@@ -49,14 +24,41 @@ export default function Account() {
           <img src="#" />
         </div>
         <div>
-          <div>{accountData?.username}</div>
-          <div>{accountData?.name}</div>
-          <div>{accountData?.bio}</div>
+          <div>{userData?.username}</div>
+          <div>{userData?.name}</div>
+          <div>{userData?.bio}</div>
         </div>
       </div>
       <div>
-        <Grid />
+        <Grid data={projectsData} />
       </div>
     </div>
   );
-}
+};
+
+const NewComponent = withDataFetching<CombinedData>(Account);
+
+const AccountWithData = () => {
+  const { identifier } = useParams<{ identifier: string }>();
+  const { user } = useAuth();
+
+  const fetchData = useCallback(async () => {
+    const userData = await getUserAccount(
+      identifier === "youraccount" ? user : null,
+      identifier !== "youraccount" ? identifier || null : null
+    );
+
+    if (!userData || !userData._id) {
+      throw new Error("User not found or no user ID available");
+    }
+
+    const userId = userData._id;
+    const projectsData = await getProjectsByUserId(user, userId);
+
+    return [{ userData, projectsData }];
+  }, [user, identifier]);
+
+  return <NewComponent fetchData={fetchData} />;
+};
+
+export default AccountWithData;

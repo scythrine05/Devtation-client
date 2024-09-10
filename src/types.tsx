@@ -1,9 +1,3 @@
-export interface BlockType {
-  id: number;
-  type: "text" | "image";
-  content: string;
-}
-
 export interface SignInData {
   email: string;
   password: string;
@@ -27,8 +21,25 @@ export interface ValidationRule {
 export type FormErrors = Record<string, string>;
 
 export interface AccountData {
+  _id: string;
   name: string;
   username: string;
   bio: string;
   //blogs: string[];
+}
+
+export interface ProjectData {
+  _id: string;
+  title: string;
+  tags: string[];
+  links: string[];
+  images: File[];
+  description: string;
+}
+
+export interface CardData {
+  _id: string;
+  title: string;
+  author: string;
+  tags: string[] | null;
 }
