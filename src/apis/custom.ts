@@ -1,7 +1,7 @@
 const API_URL = import.meta.env.VITE_API_URL;
 import { User } from "firebase/auth";
 import { handleRequest } from "../helpers/apiHandler";
-import { ProfileData, SignUpData, AccountData, ProjectData } from "/src/types";
+import { ProfileData, SignUpData, ProjectInputData } from "/src/types";
 
 const baseOptions = {
   withCredentials: true,
@@ -34,6 +34,8 @@ export const logoutUser = async (user: User | null) => {
   return handleRequest("delete", URL, user, baseOptions);
 };
 
+//Users APIs
+
 export const createUser = async (userData: SignUpData, token: string) => {
   const URL = `${API_URL}/user`;
   return handleRequest(
@@ -53,12 +55,15 @@ export const createUser = async (userData: SignUpData, token: string) => {
 };
 
 export const getUserById = async (user: User | null, userId: string | null) => {
-  const URL = `${API_URL}/user/_id/${userId}`;
+  const URL = `${API_URL}/user/userId/${userId}`;
   const response = await handleRequest("get", URL, user, baseOptions);
   return response?.data;
 };
 
-export const getUserByUsername = async (user: User | null, username: string | null) => {
+export const getUserByUsername = async (
+  user: User | null,
+  username: string | null
+) => {
   const URL = `${API_URL}/user/username/${username}`;
   const response = await handleRequest("get", URL, user, baseOptions);
   return response?.data;
@@ -86,11 +91,11 @@ export const removeUserById = async (user: User | null) => {
 export const getUserAccount = async (
   user: User | null,
   username: string | null
-): Promise<AccountData> => {
-  const userId = user ? user.uid : "";
+): Promise<ProfileData> => {
+  const userId = user ? user.uid : user;
   const URL = username
     ? `${API_URL}/account/username/${username}`
-    : `${API_URL}/account/_id/${userId}`;
+    : `${API_URL}/account/userId/${userId}`;
   const response = await handleRequest("get", URL, user, baseOptions);
   return response?.data;
 };
@@ -103,15 +108,27 @@ export const getProjects = async (user: User | null) => {
   return response?.data;
 };
 
-export const getProjectsByUserId = async (user: User | null, userId: string | null) => {
+export const getProjectsByUserId = async (
+  user: User | null,
+  userId: string | null
+) => {
   const URL = `${API_URL}/project/user/${userId}`;
+  const response = await handleRequest("get", URL, user, baseOptions);
+  return response?.data;
+};
+
+export const getProjectById = async (
+  user: User | null,
+  projectId: string | null
+) => {
+  const URL = `${API_URL}/project/${projectId}`;
   const response = await handleRequest("get", URL, user, baseOptions);
   return response?.data;
 };
 
 export const postProject = async (
   user: User | null,
-  projectData: ProjectData
+  projectData: ProjectInputData
 ) => {
   const URL = `${API_URL}/project`;
   return handleRequest("post", URL, user, {
@@ -119,6 +136,30 @@ export const postProject = async (
     data: projectData,
   });
 };
+
+export const hypeProject = async (user: User | null, projectId: string) => {
+  const userId = user ? user.uid : user;
+  const URL = `${API_URL}/project/hype`;
+  return handleRequest("post", URL, user, {
+    ...baseOptions,
+    data: { projectId, userId },
+  });
+};
+
+export const isProjectHypedByUser = async (
+  projectId: string,
+  userId: string
+): Promise<boolean> => {
+  const URL = `${API_URL}/project/${projectId}/ishyped/${userId}`;
+  const response = await handleRequest("get", URL, null, baseOptions, false);
+  return response?.data.isHype ?? false;
+};
+
+export const deleteProjectsByUserId = async (user: User | null) => {
+  const userId = user ? user.uid : user;
+  const URL = `${API_URL}/project/${userId}`; 
+  return handleRequest("delete", URL, user, baseOptions);
+}
 
 //token test API
 export const testUser = async (user: User | null) => {

@@ -26,15 +26,15 @@ const routes: RouteObject[] = [
         path: "setting",
         element: <ProtectedRoute children={<Setting />} />,
       },
+      {
+        path: "/view/project/:id",
+        element: <ProtectedRoute children={<View />} />,
+      },
     ],
   },
   {
     path: "new",
     element: <ProtectedRoute children={<New />} />,
-  },
-  {
-    path: "/view/project/:id",
-    element: <ProtectedRoute children={<View />} />,
   },
 ];
 

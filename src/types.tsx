@@ -9,6 +9,7 @@ export interface SignUpData extends SignInData {
 }
 
 export interface ProfileData extends Omit<SignUpData, "password"> {
+  _id: string;
   bio: string;
 }
 
@@ -20,16 +21,7 @@ export interface ValidationRule {
 
 export type FormErrors = Record<string, string>;
 
-export interface AccountData {
-  _id: string;
-  name: string;
-  username: string;
-  bio: string;
-  //blogs: string[];
-}
-
-export interface ProjectData {
-  _id: string;
+export interface ProjectInputData {
   title: string;
   tags: string[];
   links: string[];
@@ -37,9 +29,16 @@ export interface ProjectData {
   description: string;
 }
 
+export interface ProjectData extends ProjectInputData {
+  _id: string;
+  authorUsername: string;
+  authorId: string;
+  hypeCount: number;
+}
+
 export interface CardData {
   _id: string;
   title: string;
-  author: string;
+  authorUsername: string;
   tags: string[] | null;
 }

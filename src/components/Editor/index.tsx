@@ -1,12 +1,12 @@
 import React, { useState } from "react";
 import QuillEditor from "./Quill";
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from "react-router-dom";
 import "./editor.style.css";
 
 import FileInput from "/src/components/Inputs/FileInput";
 import ItemInput from "/src/components/Inputs/ItemInput";
 import Button from "/src/components/Button";
-import { ProjectData } from "/src/types";
+import { ProjectInputData } from "/src/types";
 
 import { useAuth } from "/src/hooks/useAuth";
 import { postProject } from "/src/apis/custom";
@@ -17,7 +17,7 @@ import { isValidLink } from "/src/helpers/validationRules";
 const Editor: React.FC = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
-  const [projectData, setProjectData] = useState<ProjectData>({
+  const [projectData, setProjectData] = useState<ProjectInputData>({
     images: [],
     title: "",
     tags: [],
@@ -66,7 +66,7 @@ const Editor: React.FC = () => {
     setProjectData((prevData) => ({
       ...prevData,
       [fieldName]: [
-        ...(prevData[fieldName as keyof ProjectData] as string[]),
+        ...(prevData[fieldName as keyof ProjectInputData] as string[]),
         value,
       ],
     }));
@@ -138,7 +138,9 @@ const Editor: React.FC = () => {
                     id={field.name}
                     onChange={handleChange}
                     value={
-                      projectData[field.name as keyof ProjectData] as string
+                      projectData[
+                        field.name as keyof ProjectInputData
+                      ] as string
                     }
                   />
                   <div>

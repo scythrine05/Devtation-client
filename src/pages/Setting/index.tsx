@@ -14,7 +14,8 @@ import withDataFetching from "/src/hoc/withDataFetching";
 const Setting = ({ data }: ProfileData | any) => {
   const { user } = useAuth();
   const [isEditing, setIsEditing] = useState<boolean>(false);
-  const [formData, setFormData] = useState<ProfileData>({
+  const [formData, setFormData] = useState({
+    _id: "",
     name: "",
     username: "",
     email: "",
@@ -37,7 +38,7 @@ const Setting = ({ data }: ProfileData | any) => {
   const authRules = [usernameExists];
 
   useEffect(() => {
-    setFormData(data);
+    setFormData({ ...data, bio: data.bio || "" });
   }, []);
 
   useEffect(() => {

@@ -1,13 +1,14 @@
 import React from "react";
-
 import Layout from "/src/layouts/Layout";
 import GetStarted from "/src/pages/GetStarted";
-
-import { useAuth } from "/src/hooks/useAuth";
+import RouteAuthHandler from "/src/hoc/routeAuthHandler";
 
 const Landing: React.FC = () => {
-  const { user, loading } = useAuth();
-  return loading ? "loading" :  user ? <Layout /> : <GetStarted />;
+  return (
+    <RouteAuthHandler fallbackComponent={<GetStarted />}>
+      <Layout />
+    </RouteAuthHandler>
+  );
 };
 
 export default Landing;

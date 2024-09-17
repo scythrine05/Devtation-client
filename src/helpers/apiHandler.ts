@@ -11,8 +11,9 @@ export const handleRequest = async (
   try {
     const response = await axios({ method, url: URL, ...baseOptions });
     return response;
-  } catch (err) {
-    if (refreshTokenEnabled)
+  } catch (err: any) {
+    const isTokenExpiredError = err.response && err.response.status === 401;
+    if (isTokenExpiredError && refreshTokenEnabled)
       return handleTokenExpiration(err, method, URL, user, baseOptions);
     else {
       console.error("Request error (no token refresh):", err);

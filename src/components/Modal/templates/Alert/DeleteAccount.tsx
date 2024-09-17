@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { User } from "firebase/auth";
 import { auth } from "/src/configs/firebase";
 import { reauthenticate, deleteAccount } from "/src/apis/firebase";
@@ -7,15 +8,12 @@ export default function DeleteAccount() {
   const user: User | null = auth.currentUser;
   const [password, setPassword] = useState("");
   const [providerKey, setProviderKey] = useState("");
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (user && user.providerData.length > 0) {
       const providerId = user.providerData[0].providerId;
-      if (providerId === "password") {
-        setProviderKey("password");
-      } else {
-        setProviderKey("oauth");
-      }
+      setProviderKey(providerId);
     }
   }, [user]);
 
@@ -25,9 +23,7 @@ export default function DeleteAccount() {
       return;
     }
     try {
-      if (providerKey === "password") {
-        await reauthenticate(user, password);
-      }
+      await reauthenticate(user, providerKey, password);
       await deleteAccount();
     } catch (err) {
       throw err;
@@ -46,7 +42,13 @@ export default function DeleteAccount() {
           />
         </div>
       )}
-      <button onClick={handleDelete}>Delete Account</button>
+      <button
+        onClick={() =>
+          handleDelete().then(() => navigate("/", { replace: true }))
+        }
+      >
+        Delete Account
+      </button>
     </div>
   );
 }

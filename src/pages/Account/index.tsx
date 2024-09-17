@@ -2,19 +2,18 @@ import React, { useCallback } from "react";
 import { useParams } from "react-router";
 import { useAuth } from "/src/hooks/useAuth";
 import { getUserAccount, getProjectsByUserId } from "/src/apis/custom";
-import { AccountData, ProjectData } from "/src/types";
+import { ProfileData, ProjectData } from "/src/types";
 import withDataFetching from "/src/hoc/withDataFetching";
 import Grid from "/src/components/Grid";
 
 interface CombinedData {
-  userData: AccountData;
+  userData: ProfileData;
   projectsData: ProjectData[];
 }
 
 interface AccountProps {
   data: CombinedData[];
 }
-
 const Account: React.FC<AccountProps> = ({ data }) => {
   const { userData, projectsData } = data[0];
   return (
@@ -30,7 +29,11 @@ const Account: React.FC<AccountProps> = ({ data }) => {
         </div>
       </div>
       <div>
-        <Grid data={projectsData} />
+        {projectsData && projectsData.length ? (
+          <Grid data={projectsData} />
+        ) : (
+          <span>No Projects</span>
+        )}
       </div>
     </div>
   );

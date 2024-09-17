@@ -26,9 +26,7 @@ const SignModal: React.FC<SignProps> = ({ authType, onNext, onToggle }) => {
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    signInWithEmail(formData)
-      .then((response) => console.log(response))
-      .catch((err) => setError(signInError(err)));
+    signInWithEmail(formData).catch((err) => setError(signInError(err)));
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {

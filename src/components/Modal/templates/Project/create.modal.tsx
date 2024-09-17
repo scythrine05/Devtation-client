@@ -10,13 +10,13 @@ interface CreateProps {
 const CreateModal: React.FC<CreateProps> = ({ onNext }) => {
   return (
     <div>
-      <div>
+      {/* <div>
         <Button onClick={onNext}>Import from Github</Button>
       </div>
       <div>
         <Button onClick={onNext}>Import from Gitlab</Button>
       </div>
-      <hr />
+      <hr /> */}
       <div>
         <Link to="/new">
         <Button>Create New</Button>

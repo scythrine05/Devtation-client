@@ -1,7 +1,7 @@
 import Card from "/src/components/Card";
 import { CardData } from "/src/types";
 
-import "./grid.style.css"
+import "./grid.style.css";
 
 const Grid = ({ data }: CardData[] | any) => {
   return (
@@ -12,7 +12,7 @@ const Grid = ({ data }: CardData[] | any) => {
             key={item._id}
             _id={item._id}
             title={item.title}
-            author={item.author}
+            authorUsername={item.authorUsername}
             tags={item.tags}
           />
         ))}

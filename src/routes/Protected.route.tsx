@@ -1,20 +1,26 @@
 import React from "react";
-import { Navigate, useLocation } from "react-router-dom";
-import { useAuth } from "/src/hooks/useAuth";
+import { useNavigate } from "react-router-dom";
+import { useEffect } from "react";
+import { useAuth } from "../hooks/useAuth";
+import RouteAuthHandler from "/src/hoc/routeAuthHandler";
 
 interface ProtectedRouteProps {
   children: React.ReactNode;
 }
 
 const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
-  const { user } = useAuth();
-  const location = useLocation();
+  const navigate = useNavigate();
+  const { user, loading } = useAuth();
 
-  if (!user) {
-    return <Navigate to="/" state={{ from: location }} />;
-  }
+  useEffect(() => {
+    if (!loading && !user) {
+      navigate("/", { replace: true });
+    }
+  }, [user, loading, navigate]);
 
-  return <>{children}</>;
+  return (
+    <RouteAuthHandler fallbackComponent={null}>{children}</RouteAuthHandler>
+  );
 };
 
 export default ProtectedRoute;
