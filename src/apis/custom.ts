@@ -1,7 +1,7 @@
 const API_URL = import.meta.env.VITE_API_URL;
 import { User } from "firebase/auth";
 import { handleRequest } from "../helpers/apiHandler";
-import { ProfileData, SignUpData, ProjectInputData } from "/src/types";
+import { ProfileData, SignUpData, ProjectResquestData } from "/src/types";
 
 const baseOptions = {
   withCredentials: true,
@@ -128,7 +128,7 @@ export const getProjectById = async (
 
 export const postProject = async (
   user: User | null,
-  projectData: ProjectInputData
+  projectData: ProjectResquestData
 ) => {
   const URL = `${API_URL}/project`;
   return handleRequest("post", URL, user, {
@@ -157,14 +157,59 @@ export const isProjectHypedByUser = async (
 
 export const deleteProjectsByUserId = async (user: User | null) => {
   const userId = user ? user.uid : user;
-  const URL = `${API_URL}/project/${userId}`; 
+  const URL = `${API_URL}/project/${userId}`;
   return handleRequest("delete", URL, user, baseOptions);
-}
+};
 
 //token test API
 export const testUser = async (user: User | null) => {
   const URL = `${API_URL}/auth/check-token`;
   return handleRequest("get", URL, user, baseOptions);
+};
+
+//File API
+
+export const uploadImages = async (
+  user: User | null,
+  files: File[]
+): Promise<string[]> => {
+  const URL = `${API_URL}/file-upload/images`;
+  const formData = new FormData();
+
+  files.forEach((file) => {
+    formData.append("images", file);
+  });
+
+  const response = await handleRequest("post", URL, user, {
+    ...baseOptions,
+    headers: {
+      ...baseOptions.headers,
+      "Content-Type": "multipart/form-data",
+    },
+    data: formData,
+  });
+
+  return response?.data ?? [];
+};
+
+export const uploadDisplayImage = async (
+  user: User | null,
+  file: File
+): Promise<string> => {
+  const URL = `${API_URL}/file-upload/display-image`;
+  const formData = new FormData();
+
+  formData.append("image", file);
+  const response = await handleRequest("post", URL, user, {
+    ...baseOptions,
+    headers: {
+      ...baseOptions.headers,
+      "Content-Type": "multipart/form-data",
+    },
+    data: formData,
+  });
+
+  return response?.data ?? "";
 };
 
 //Open APIs

@@ -4,6 +4,7 @@ import {
   signInWithEmailAndPassword,
   reauthenticateWithPopup,
   reauthenticateWithCredential,
+  updateProfile,
   OAuthProvider,
   AuthCredential,
   EmailAuthProvider,
@@ -25,7 +26,7 @@ import {
 import { SignInData, SignUpData } from "/src/types";
 
 export const signUpWithEmail = async (userData: SignUpData) => {
-  const { email, password } = userData;
+  const { email, password, name } = userData;
   try {
     const userCredential = await createUserWithEmailAndPassword(
       auth,
@@ -33,6 +34,8 @@ export const signUpWithEmail = async (userData: SignUpData) => {
       password
     );
     const user = userCredential.user;
+    const displayName = name;
+    await updateUserDisplayName(user, displayName);
     const _id_token_ = await user.getIdToken();
     const response = await createUser(userData, _id_token_);
     return response;
@@ -63,10 +66,12 @@ export const signInWithGoogle = async () => {
     const result = await signInWithPopup(auth, provider);
     const user = result.user;
     const email = user.email || "";
+    const displayName = user.displayName;
+    await updateUserDisplayName(user, displayName);
     const userData = {
       email,
       password: "",
-      name: user.displayName || "",
+      name: displayName || "",
       username: email?.split("@")[0],
     };
     const _id_token_ = await user.getIdToken();
@@ -83,10 +88,12 @@ export const signInWithGitHub = async () => {
     const result = await signInWithPopup(auth, provider);
     const user = result.user;
     const email = user.email || "";
+    const displayName = user.displayName;
+    await updateUserDisplayName(user, displayName);
     const userData = {
       email,
       password: "",
-      name: user.displayName || "",
+      name: displayName || "",
       username: email?.split("@")[0],
     };
     const _id_token_ = await user.getIdToken();
@@ -94,6 +101,19 @@ export const signInWithGitHub = async () => {
     return response;
   } catch (error) {
     throw error;
+  }
+};
+
+export const updateUserDisplayName = async (
+  user: User | null,
+  displayName: string | null
+) => {
+  if (user && user.displayName !== displayName) {
+    try {
+      await updateProfile(user, { displayName });
+    } catch (error) {
+      throw error;
+    }
   }
 };
 
@@ -142,7 +162,7 @@ export const reauthenticate = async (
       case "password":
         if (!email || !password) {
           throw new Error(
-            "Email and password must be provided for email reauthentication."
+            "Empty Fields"
           );
         }
         credential = EmailAuthProvider.credential(
@@ -180,8 +200,7 @@ export const reauthenticate = async (
     // Reauthenticate with the credential
     const result = await reauthenticateWithCredential(user, credential);
     return result;
-  } catch (error) {
-    console.error("Reauthentication failed:", error);
-    return null;
+  } catch (err) {
+    throw new Error("Invalid credentials");;
   }
 };

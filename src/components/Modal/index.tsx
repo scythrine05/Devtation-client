@@ -1,28 +1,32 @@
-import React from 'react';
-import './modal.style.css';
+import React from "react";
+import { Modal } from "flowbite-react";
+import { ModalProps } from "flowbite-react";
 
-interface ModalProps {
-  show: boolean;
-  onClose: () => void;
-  children: React.ReactNode;
-}
-
-const Modal: React.FC<ModalProps> = ({ show, onClose, children }) => {
+const ModalComponent: React.FC<ModalProps> = ({
+  show,
+  onClose,
+  children,
+  title,
+}) => {
   if (!show) return null;
 
-  const handleBackdropClick = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (e.target === e.currentTarget) {
-      onClose();
-    }
-  };
-
   return (
-    <div className="modal-backdrop" onClick={handleBackdropClick}>
-      <div className="modal-content">
+    <Modal
+      show={show}
+      onClose={onClose}
+      className="bg-black flex justify-center items-center box-content"
+    >
+      <Modal.Header className="bg-[var(--color-dark-theme-sub-background)] border-none p-1" />
+      <Modal.Body className="bg-[var(--color-dark-theme-sub-background)] flex justify-center flex-col items-center overflow-clip">
+        <div className="bg-[var(--color-dark-theme-sub-background)] text-xl border-none text-center mb-5">
+          <h1 className="text-[var(--color-dark-theme-font)] text-responsive-medium font-display font-medium">
+            {title}
+          </h1>
+        </div>
         {children}
-      </div>
-    </div>
+      </Modal.Body>
+    </Modal>
   );
 };
 
-export default Modal;
+export default ModalComponent;

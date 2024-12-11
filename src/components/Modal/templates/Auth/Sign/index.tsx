@@ -1,32 +1,61 @@
 import React, { useState } from "react";
-import Button from "/src/components/Button";
+import { ThemeButton } from "/src/components/Button";
+import TextInput from "/src/components/Inputs/TextInput";
+import TextDivider from "/src/components/TextDivider";
 import Oauth from "../Oauth";
+import Info from "../Info";
 
 import { signInWithEmail } from "/src/apis/firebase";
 import { SignInData } from "/src/types";
-import { signInError } from "/src/helpers/errorhandler";
+import { validateForm } from "/src/helpers/validateForm";
+import { validEmail } from "/src/helpers/validationRules";
+import withAsyncHandler from "/src/hoc/withAsyncHandler";
 
 interface SignProps {
   authType: string;
-  onNext: () => void;
   onToggle: () => void;
+  loading: boolean;
+  asyncHandler: any;
 }
 
-const SignModal: React.FC<SignProps> = ({ authType, onNext, onToggle }) => {
+const SignModal: React.FC<SignProps> = ({
+  authType,
+  onToggle,
+  loading,
+  asyncHandler,
+}) => {
   const [formData, setFormData] = useState({
     email: "",
     password: "",
   });
-  const [error, setError] = useState<string>();
-
+  const [errors, setErrors] = useState<Record<string, string>>({});
   const fields = [
     { name: "email", type: "email", label: "Email" },
     { name: "password", type: "password", label: "Password" },
   ];
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    signInWithEmail(formData).catch((err) => setError(signInError(err)));
+  const authRules = [validEmail];
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    try {
+      e.preventDefault();
+
+      const validationErrors = await asyncHandler(async () =>
+        validateForm(formData, null, authRules, null)
+      );
+      setErrors(validationErrors);
+      if (Object.keys(validationErrors).length === 0) {
+        await asyncHandler(async () =>
+          signInWithEmail(formData).catch(() =>
+            setErrors({
+              email: "Invalid Credential",
+              password: "Invalid Credential",
+            })
+          )
+        );
+      }
+    } catch (err) {
+      throw err;
+    }
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -36,40 +65,55 @@ const SignModal: React.FC<SignProps> = ({ authType, onNext, onToggle }) => {
       [name]: value,
     });
   };
-
   return (
-    <div>
-      <Oauth authType={authType} />
-      <hr />
-      <div>
+    <div className="w-full flex justify-center flex-col items-center">
+      <Oauth authType={authType} disabled={loading} />
+      <TextDivider text="or" />
+      <div className="w-full flex justify-center flex-col">
         {authType === "signin" ? (
           <>
-            <div>
-              <span>{error}</span>
-            </div>
             <form onSubmit={handleSubmit}>
               {fields.map((field) => (
                 <div key={field.name}>
-                  {field.label}
-                  <input
+                  <TextInput
+                    label={field.label}
                     type={field.type}
                     name={field.name}
-                    onChange={handleChange}
+                    handleChange={handleChange}
                     value={formData[field.name as keyof SignInData]}
+                    helper={errors[field.name]}
                   />
                 </div>
               ))}
-              <Button type={"submit"}>Sign In</Button>
+              <div className="flex justify-center my-5">
+                <ThemeButton loading={loading} type={"submit"}>
+                  Sign{loading ? "ing" : ""} in
+                </ThemeButton>
+              </div>
             </form>
-            <div>
-              <Button onClick={onToggle}>Create Account</Button>
+            <div className="text-center text-responsive-sm">
+              Don't have an account ?{"  "}
+              <span
+                className="cursor-pointer text-devtiny-theme hover:text-devtiny-theme-light"
+                onClick={onToggle}
+              >
+                Create account
+              </span>
             </div>
           </>
         ) : (
           <>
-            <Button onClick={onNext}>Email</Button>
-            <div>
-              <Button onClick={onToggle}>Already Account</Button>
+            <div className="flex justify-center">
+              <Info />
+            </div>
+            <div className="text-center text-responsive-sm">
+              Already have an account ?{"  "}
+              <span
+                onClick={onToggle}
+                className="cursor-pointer text-devtiny-theme hover:text-devtiny-theme-light"
+              >
+                Sign in
+              </span>
             </div>
           </>
         )}
@@ -78,4 +122,4 @@ const SignModal: React.FC<SignProps> = ({ authType, onNext, onToggle }) => {
   );
 };
 
-export default SignModal;
+export default withAsyncHandler(SignModal);

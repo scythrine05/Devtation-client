@@ -1,4 +1,5 @@
 import React from "react";
+import LoadingComponent from "/src/components/Loading";
 import { useAuth } from "/src/hooks/useAuth";
 
 interface AuthHandlerProps {
@@ -8,7 +9,7 @@ interface AuthHandlerProps {
 }
 
 const AuthHandler: React.FC<AuthHandlerProps> = ({
-  loadingComponent = <div>Loading...</div>, 
+  loadingComponent = <LoadingComponent />,
   children,
   fallbackComponent = null,
 }) => {

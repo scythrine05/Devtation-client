@@ -1,15 +1,11 @@
 import { Outlet } from "react-router";
-import Sidebar from "../Sidebar";
 import Header from "../Header";
-
-import "./layout.style.css";
 
 export default function Layout() {
   return (
-    <div className="layout">
+    <div className="layout bg-[var(--color-dark-theme-background)]">
       <Header />
-      <Sidebar />
-      <main className="main-content">
+      <main className="min-h-screen">
         <Outlet />
       </main>
     </div>

@@ -1,0 +1,7 @@
+.dropdown-item:focus {
+  background-color: transparent !important;
+}
+
+.dropdown-item:hover {
+    background-color: var(--color-dark-theme-sub-background-3) !important;
+}

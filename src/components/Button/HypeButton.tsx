@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { hypeProject } from "/src/apis/custom";
 import { useAuth } from "/src/hooks/useAuth";
+import { LuMegaphone } from "react-icons/lu";
 
 interface HypeButtonProps {
   projectId: string;
@@ -34,10 +35,25 @@ const HypeButton: React.FC<HypeButtonProps> = ({
 
   return (
     <>
-      <button onClick={toggleHype} disabled={loading}>
-        {loading ? "Processing..." : hasHyped ? "Unhype" : "Hype"}
-      </button>
-      <div className="view-votes">{hypeNum} hypes</div>
+      <div className="flex items-center rounded-md overflow-hidden divide-x font-semibold">
+        <button
+          onClick={toggleHype}
+          disabled={loading}
+          className={`flex items-center px-4 py-2 text-responsive-sm ${
+            hasHyped
+              ? "bg-[var(--color-purple-1)] text-[var(--color-white)] hover:bg-[var(--color-purple-2)]"
+              : "bg-[var(--color-white-2)] text-[var(--color-black-3)] hover:bg-[var(--color-white-1)]"
+          } disabled:opacity-50 disabled:cursor-not-allowed`}
+        >
+          <div className="mr-1">
+            <LuMegaphone size={16} />
+          </div>
+          {loading ? "hyping" : hasHyped ? "unhype" : "hype"}
+        </button>
+        <div className="flex items-center justify-center px-4 py-2 text-responsive-sm bg-[var(--color-white-1)] text-[var(--color-black-3)] rounded-e-md">
+          {hypeNum}
+        </div>
+      </div>
     </>
   );
 };

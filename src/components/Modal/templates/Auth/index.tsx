@@ -1,10 +1,28 @@
-import { useState } from "react";
+import React, { useState, useEffect } from "react";
 
+import Modal from "/src/components/Modal";
 import Sign from "./Sign";
-import Info from "./Info";
+import { ModalProps } from "flowbite-react";
 
-export default function AuthTemplate() {
+const AuthTemplate: React.FC<ModalProps> = ({ show, onClose }) => {
   const [currStep, setCurrStep] = useState("signin");
+
+  useEffect(() => {
+    if (!show) {
+      setCurrStep("signin");
+    }
+  }, [show]);
+
+  const getTitle = () => {
+    switch (currStep) {
+      case "signin":
+        return "Welcome back";
+      case "signup":
+        return "Join the community";
+      default:
+        return "";
+    }
+  };
 
   const renderStep = () => {
     switch (currStep) {
@@ -13,7 +31,6 @@ export default function AuthTemplate() {
           <Sign
             onToggle={() => setCurrStep("signup")}
             authType={currStep}
-            onNext={() => null}
           />
         );
       case "signup":
@@ -21,15 +38,18 @@ export default function AuthTemplate() {
           <Sign
             onToggle={() => setCurrStep("signin")}
             authType={currStep}
-            onNext={() => setCurrStep("info")}
           />
         );
-      case "info":
-        return <Info />;
       default:
         return null;
     }
   };
 
-  return <div>{renderStep()}</div>;
-}
+  return (
+    <Modal show={show} onClose={onClose} title={getTitle()}>
+      {renderStep()}
+    </Modal>
+  );
+};
+
+export default AuthTemplate;

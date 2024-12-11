@@ -16,7 +16,7 @@ export const validateForm = async (
   //Checking empty fields apart from optional fields
   Object.keys(values).forEach((field) => {
     if (isRequired(field, optionalFieldsArray) && values[field] === "") {
-      errors[field] = `${field} is required`;
+      errors[field] = `${field.charAt(0).toUpperCase() + field.slice(1)} is required`;
     }
   });
 

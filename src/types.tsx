@@ -1,3 +1,12 @@
+import { ReactNode } from "react";
+
+export interface ModalProps {
+  show: boolean;
+  title: string;
+  onClose: () => void;
+  children: React.ReactNode;
+}
+
 export interface SignInData {
   email: string;
   password: string;
@@ -24,16 +33,24 @@ export type FormErrors = Record<string, string>;
 export interface ProjectInputData {
   title: string;
   tags: string[];
-  links: string[];
+  links: {
+    name: string;
+    url: string;
+  }[];
   images: File[];
   description: string;
 }
 
-export interface ProjectData extends ProjectInputData {
+export interface ProjectRespondData extends Omit<ProjectInputData, "images"> {
   _id: string;
   authorUsername: string;
   authorId: string;
   hypeCount: number;
+  images: string[];
+}
+
+export interface ProjectResquestData extends Omit<ProjectInputData, "images"> {
+  imageUrls: string[];
 }
 
 export interface CardData {
@@ -41,4 +58,11 @@ export interface CardData {
   title: string;
   authorUsername: string;
   tags: string[] | null;
+}
+
+export interface Tab {
+  title: string;
+  content: ReactNode;
+  active?: boolean;
+  disabled?: boolean;
 }

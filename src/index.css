@@ -1,15 +1,73 @@
+/* Google Fonts */
+@import url("https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap&family=Orbitron:wght@400..900&display=swap");
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 :root {
-  --font-style: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
-  
+  --color-red-1: #ff4545;
+  --color-purple-1: #7734e7;
+  --color-purple-2: #8956e2;
+  --color-black-1: #080808;
+  --color-black-2: #161616;
+  --color-black-3: #0d0d0d;
+  --color-black-4: #2f2f2f;
+  --color-black-5: #232323;
+  --color-white-1: #d0d0d0;
+  --color-white-2: #fffeff;
+  --color-blue: #007acc;
+
+  --color-devtiny-theme: var(--color-purple-1);
+  --color-devtiny-theme-light: var(--color-purple-2);
+  --color-devtiny-theme-2: var(--color-red-1);
+  --color-dark-theme-background: var(--color-black-1);
+  --color-dark-theme-sub-background: var(--color-black-2);
+  --color-dark-theme-sub-background-2: var(--color-black-3);
+  --color-dark-theme-sub-background-3: var(--color-black-4);
+  --color-dark-theme-font: var(--color-white-1);
+
+  --font-icon: "Orbitron", system-ui;
+  --font-base: "Open Sans", system-ui;
+  --font-display: "Poppins", system-ui;
+  --font-size-lg-max: 5rem;
+  --font-size-lg-min: 2rem;
+  --font-size-lg-var: 2vw + var(--font-size-lg-min);
+  --font-size-medium-max: 2rem;
+  --font-size-medium-var: 1.5vw + var(--font-size-medium-min);
+  --font-size-medium-min: 1.4rem;
+  --font-size-regular-max: 16px;
+  --font-size-regular-var: 0.3vw + var(--font-size-regular-min);
+  --font-size-regular-min: 13px;
+  --font-size-regular-lg-max: 20px;
+  --font-size-regular-lg-var: 1vw + var(--font-size-regular-lg-min);
+  --font-size-regular-lg-min: 13px;
+  --font-size-sm-max: 13px;
+  --font-size-sm-var: 0.5vw + var(--font-size-sm-min);
+  --font-size-sm-min: 10px;
+  --font-size-icon-max: 1.6rem;
+  --font-size-icon-var: 1vw + var(--font-size-icon-min);
+  --font-size-icon-min: 1rem;
+  --font-size-oauth-max: 0.9rem;
+  --font-size-oauth-var: 1vw + var(--font-size-oauth-min);
+  --font-size-oauth-min: 0.5rem;
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  font-family: var(--font-style);
+  color: var(--color-dark-theme-font);
+
+  /* Quill Editor Variables */
+  --color-quill-border: #ccc;
+  --color-quill-background: #1a1a1a;
+  --color-quill-text: #e6e6e6;
+  --color-quill-toolbar-background: #333;
+  --color-quill-button-background: #444;
+  --color-quill-button-text: #fff;
+  --color-quill-button-hover: #555;
+  --color-quill-button-active: #666;
+  --color-quill-placeholder: #999;
+  --color-quill-focus: #007acc;
+  --color-quill-active-text: #fff;
 }
 
 a {

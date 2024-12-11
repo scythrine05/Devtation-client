@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import Button from "/src/components/Button";
 import ReCAPTCHA from "react-google-recaptcha";
 
 import { signUpWithEmail } from "/src/apis/firebase";
@@ -12,9 +11,16 @@ import {
   emailExists,
 } from "/src/helpers/validationRules";
 import { verifyRecaptchaToken } from "/src/apis/custom";
+import TextInput from "/src/components/Inputs/TextInput";
+import { ThemeButton } from "/src/components/Button";
+import withAsyncHandler from "/src/hoc/withAsyncHandler";
 
-export default function Info() {
-  
+interface InfoProps {
+  loading: boolean;
+  asyncHandler: any;
+}
+
+const Info: React.FC<InfoProps> = ({ loading, asyncHandler }) => {
   const [formData, setFormData] = useState<SignUpData>({
     username: "",
     name: "",
@@ -44,21 +50,22 @@ export default function Info() {
         setErrors({ recaptcha: "Please verify that you are not a robot" });
         return;
       }
-      const validationErrors = await validateForm(
-        formData,
-        null,
-        authRules,
-        null
+      const validationErrors = await asyncHandler(async () =>
+        validateForm(formData, null, authRules, null)
       );
       setErrors(validationErrors);
 
       if (Object.keys(validationErrors).length === 0) {
-        const recaptchaVerified = await verifyRecaptchaToken(recaptchaToken);
+        const recaptchaVerified = await asyncHandler(async () =>
+          verifyRecaptchaToken(recaptchaToken)
+        );
         if (!recaptchaVerified) {
           setErrors({ recaptcha: "reCAPTCHA verification failed" });
           return;
         }
-        signUpWithEmail(formData).catch((err) => console.error(err));
+        await asyncHandler(async () =>
+          signUpWithEmail(formData).catch((err) => console.error(err))
+        );
       }
     } catch (err) {
       throw err;
@@ -78,33 +85,45 @@ export default function Info() {
   };
 
   return (
-    <form
-      onSubmit={(e) =>
-        handleSubmit(e).catch(() => console.error("Error Submitting"))
-      }
-    >
-      {fields.map((field) => (
-        <div key={field.name}>
-          {field.label}
-          <input
-            type={field.type}
-            name={field.name}
-            onChange={handleChange}
-            value={formData[field.name as keyof SignUpData]}
+    <div className="w-full flex justify-center flex-col">
+      <form
+        onSubmit={(e) =>
+          handleSubmit(e).catch(() => console.error("Error Submitting"))
+        }
+      >
+        {fields.map((field) => (
+          <div key={field.name}>
+            <TextInput
+              label={field.label}
+              type={field.type}
+              name={field.name}
+              handleChange={handleChange}
+              value={formData[field.name as keyof SignUpData]}
+              helper={errors[field.name]}
+            />
+          </div>
+        ))}
+        <div className="flex justify-center flex-col items-center">
+          <ReCAPTCHA
+            sitekey={import.meta.env.VITE_RECAPTCHA_SITE_KEY as string}
+            onChange={handleRecaptchaChange}
           />
-          <div>{errors[field.name] && <span>{errors[field.name]}</span>}</div>
+          <div>
+            {errors.recaptcha && (
+              <span className="mt-2 text-responsive-sm text-red-700">
+                {errors.recaptcha}
+              </span>
+            )}
+          </div>
         </div>
-      ))}
-      <div>
-        <ReCAPTCHA
-          sitekey={import.meta.env.VITE_RECAPTCHA_SITE_KEY as string}
-          onChange={handleRecaptchaChange}
-        />
-        {errors.recaptcha && <span>{errors.recaptcha}</span>}
-      </div>
-      <div>
-        <Button type="submit">Create Account</Button>
-      </div>
-    </form>
+        <div className="flex justify-center my-5">
+          <ThemeButton loading={loading} type="submit">
+            Creat{loading ? "ing" : "e"} Account
+          </ThemeButton>
+        </div>
+      </form>
+    </div>
   );
-}
+};
+
+export default withAsyncHandler(Info);
