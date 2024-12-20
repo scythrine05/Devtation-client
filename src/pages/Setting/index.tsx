@@ -11,13 +11,13 @@ import Modal from "/src/components/Modal";
 import DeleteAccount from "/src/components/Modal/templates/Alert/DeleteAccount";
 import {
   ThemeButton,
-  SecodaryButton,
+  SecondaryButton,
   DangerButton,
 } from "/src/components/Button";
 import TextInput, { TextArea } from "/src/components/Inputs/TextInput";
 
 //Icons
-import { BsImage } from "react-icons/bs";
+import { RiImageEditFill } from "react-icons/ri";
 import { LuTrash } from "react-icons/lu";
 import { FiEdit3 } from "react-icons/fi";
 
@@ -147,17 +147,17 @@ const Setting = ({ data }: ProfileData | any) => {
           />
         </div>
         <div className="mt-5">
-          <ThemeButton
+          <SecondaryButton
             disabled={isEditing}
             onClick={() => toggleModal(setShowDisplayImageModal)}
           >
             <div className="flex items-center">
               <div>
-                <BsImage className="mr-1" size={16} />
+                <RiImageEditFill className="mr-2" size={18} />
               </div>
               Edit image
             </div>
-          </ThemeButton>
+          </SecondaryButton>
         </div>
       </div>
       <div className="w-full sm:w-1/2 2xl:w-1/4 mt-10">
@@ -189,7 +189,7 @@ const Setting = ({ data }: ProfileData | any) => {
             ))}
             <div>
               {isEditing ? (
-                <div className="flex w-fit">
+                <div className="flex w-fit mt-5">
                   <div className="mr-5">
                     <ThemeButton
                       onClick={() =>
@@ -200,19 +200,21 @@ const Setting = ({ data }: ProfileData | any) => {
                       Updat{loading ? "ing" : "e"}
                     </ThemeButton>
                   </div>
-                  <SecodaryButton onClick={handleCancel}>Cancel</SecodaryButton>
+                  <SecondaryButton onClick={handleCancel}>
+                    Cancel
+                  </SecondaryButton>
                 </div>
               ) : (
                 <>
                   <div className="mt-5">
-                    <ThemeButton onClick={handleEdit}>
+                    <SecondaryButton onClick={handleEdit}>
                       <div className="flex items-center">
                         <div>
                           <FiEdit3 className="mr-1" size={18} />
                         </div>
                         Edit profile
                       </div>
-                    </ThemeButton>
+                    </SecondaryButton>
                   </div>
                 </>
               )}

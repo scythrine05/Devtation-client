@@ -8,7 +8,7 @@ import { useAuth } from "/src/hooks/useAuth";
 import { FlowBiteCarousel } from "/src/components/Carousel";
 import HypeButton from "/src/components/Button/HypeButton";
 
-//Icons
+// Icons
 import { RiExternalLinkLine } from "react-icons/ri";
 import { AiOutlineTag } from "react-icons/ai";
 
@@ -24,6 +24,7 @@ interface ViewProps {
 }
 
 const View: React.FC<ViewProps> = ({ data }) => {
+  const { user } = useAuth();
   const { projectData, isHype } = data[0];
 
   if (!projectData) {

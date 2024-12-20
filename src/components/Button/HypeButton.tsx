@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { hypeProject } from "/src/apis/custom";
 import { useAuth } from "/src/hooks/useAuth";
 import { LuMegaphone } from "react-icons/lu";
+import { Spinner } from "flowbite-react";
 
 interface HypeButtonProps {
   projectId: string;
@@ -48,7 +49,7 @@ const HypeButton: React.FC<HypeButtonProps> = ({
           <div className="mr-1">
             <LuMegaphone size={16} />
           </div>
-          {loading ? "hyping" : hasHyped ? "unhype" : "hype"}
+          {loading ? <Spinner size="xs" color={"gray"} className="ml-2" /> : hasHyped ? "unhype" : "hype"}
         </button>
         <div className="flex items-center justify-center px-4 py-2 text-responsive-sm bg-[var(--color-white-1)] text-[var(--color-black-3)] rounded-e-md">
           {hypeNum}

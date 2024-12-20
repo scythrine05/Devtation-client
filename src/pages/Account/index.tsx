@@ -5,7 +5,7 @@ import { getUserAccount, getProjectsByUserId } from "/src/apis/custom";
 import { ProfileData, ProjectRespondData } from "/src/types";
 import withDataFetching from "/src/hoc/withDataFetching";
 import Grid from "/src/components/Grid";
-import { ThemeButton } from "/src/components/Button";
+import { SecondaryButton } from "/src/components/Button";
 import { FaPlus } from "react-icons/fa6";
 import { Link } from "react-router-dom";
 
@@ -21,7 +21,7 @@ const Account: React.FC<AccountProps> = ({ data }) => {
   const { userData, projectsData } = data[0];
   return (
     <div>
-      <div className="flex items-center flex-col md:flex-row md:mx-5 p-10">
+      <div className="flex items-center flex-col md:flex-row md:mx-5 p-10 lg:w-2/3 xl:w-2/4 w-full">
         <div>
           <div className="w-32 h-w-32 md:h-40 md:w-40">
             <img
@@ -39,7 +39,7 @@ const Account: React.FC<AccountProps> = ({ data }) => {
             </span>
           </div>
           <div>
-            <span className="text-responsive-oauth text-[var(--color-dark-theme-font)]">
+            <span className="text-responsive-oauth text-[var(--color-dark-theme-font)">
               {userData?.bio}
             </span>
           </div>
@@ -51,16 +51,16 @@ const Account: React.FC<AccountProps> = ({ data }) => {
           <Grid data={projectsData} />
         ) : (
           <div className="w-ful text-responsive-regular-lg font-display flex justify-center items-center flex-col pt-20">
-            <div className="mb-5">You have no current projects</div>
+            <div className="mb-5"><p className="text-responsive-oauth">You have no projects</p></div>
             <Link to="/new">
-              <ThemeButton>
+              <SecondaryButton>
                 <div className="flex justify-between items-center">
                   <FaPlus />
-                  <span className="ml-1 hidden lg:inline text-sm">
+                  <span className="ml-1 hidden lg:inline text-responsive-sm">
                     Add project
                   </span>
                 </div>
-              </ThemeButton>
+              </SecondaryButton>
             </Link>
           </div>
         )}

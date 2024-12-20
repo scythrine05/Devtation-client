@@ -1,3 +1,5 @@
+import { Dispatch, SetStateAction } from "react";
+
 import { Dropdown } from "flowbite-react";
 import { Link, useNavigate } from "react-router-dom";
 
@@ -9,8 +11,10 @@ import "./dropdown.style.css";
 //Icons
 import { TbUser } from "react-icons/tb";
 import { RiSettingsLine } from "react-icons/ri";
-import { LuFolder } from "react-icons/lu";
+import { LuFolder, LuTrash } from "react-icons/lu";
 import { RxExit } from "react-icons/rx";
+import { BsThreeDotsVertical } from "react-icons/bs";
+import { FiEdit3 } from "react-icons/fi";
 
 const DropdownComponent = () => {
   const navigate = useNavigate();
@@ -73,3 +77,40 @@ const DropdownComponent = () => {
 };
 
 export default DropdownComponent;
+
+interface OptionsDropdownComponentProps {
+  _id: string;
+  setDeleteMode: Dispatch<SetStateAction<boolean>>;
+}
+
+export const OptionsDropdownComponent: React.FC<
+  OptionsDropdownComponentProps
+> = ({ _id, setDeleteMode }) => {
+  return (
+    <Dropdown
+      renderTrigger={() => (
+        <button className="relative bg-transparent hover:bg-[var(--color-dark-theme-sub-background-3)] mx-2 text-white p-2 rounded-md">
+          <BsThreeDotsVertical size={20} />
+        </button>
+      )}
+      label=""
+      className="!bg-[var(--color-dark-theme-sub-background)] border-none absolute top-0 left-0 -ml-5 p-2"
+    >
+      <Link to={`/edit/project/${_id}`}>
+        <Dropdown.Item
+          className="dropdown-item text-[var(--color-dark-theme-font)] font-medium"
+          icon={FiEdit3}
+        >
+          <div className="text-xs">Edit project</div>
+        </Dropdown.Item>
+      </Link>
+      <Dropdown.Item
+        className="dropdown-item text-[var(--color-dark-theme-font)] font-medium"
+        icon={LuTrash}
+        onClick={() => setDeleteMode(true)}
+      >
+        <div className="text-xs">Delete project</div>
+      </Dropdown.Item>
+    </Dropdown>
+  );
+};

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import TextInput from "../Inputs/TextInput";
 import { isValidLink } from "/src/helpers/validationRules";
-import { SecodaryButton } from "../Button";
+import { SecondaryButton } from "../Button";
 
 //Icons
 import { MdAddLink } from "react-icons/md";
@@ -76,9 +76,9 @@ const LinksInput: React.FC<{
             />
           </div>
           <div>
-            <SecodaryButton type="submit">
+            <SecondaryButton type="submit">
               <MdAddLink size={18} />
-            </SecodaryButton>
+            </SecondaryButton>
           </div>
         </div>
       </form>

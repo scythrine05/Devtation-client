@@ -2,9 +2,11 @@
 import { ThemeButton } from "/src/components/Button";
 import { useAuth } from "/src/hooks/useAuth";
 import { Link } from "react-router-dom";
-import { FaPlus } from "react-icons/fa6";
 
 import Dropdown from "/src/components/Dropdown";
+
+//Icons
+import { FaPlus } from "react-icons/fa6";
 
 export default function Header() {
   const { user } = useAuth();
@@ -19,8 +21,8 @@ export default function Header() {
       <div className="flex items-center justify-between">
         <Link to="/">
           <div>
-            <h1 className="text-responsive-icon font-display font-semibold text-transparent bg-clip-text bg-gradient-to-r from-devtiny-theme to-devtiny-theme-2">
-              De<span className="font-icon font-extrabold">v</span>tiny
+            <h1 className="text-responsive-icon font-display font-semibold text-[var(--color-white-1)]">
+              De<span className="font-icon font-extrabold">v</span>hutch
             </h1>
           </div>
         </Link>

@@ -1,11 +1,11 @@
-import React, { useState, ChangeEvent } from "react";
+import React, { useEffect, useState, ChangeEvent } from "react";
 import QuillEditor from "./Quill";
 import { useNavigate } from "react-router-dom";
 
 import FileInputComponent from "../custom/FileUpload";
 import ItemInput from "/src/components/Inputs/ItemInput";
 import { CustomTextInputComponent } from "../Inputs/TextInput";
-import { SecodaryButton, ThemeButton } from "/src/components/Button";
+import { SecondaryButton, ThemeButton } from "/src/components/Button";
 import LinksInput from "../custom/LinksInput";
 
 import { ProjectInputData } from "/src/types";
@@ -18,16 +18,27 @@ import { validateForm } from "/src/helpers/validateForm";
 import "./editor.style.css";
 import { EditCarouselComponent } from "../Carousel";
 
-const Editor: React.FC = () => {
+interface EditorProps {
+  existingData?: ProjectInputData | null;
+}
+
+const Editor: React.FC<EditorProps> = ({ existingData }) => {
   const { user } = useAuth();
   const navigate = useNavigate();
-  const [projectData, setProjectData] = useState<ProjectInputData>({
-    images: [],
-    title: "",
-    tags: [],
-    links: [],
-    description: "",
-  });
+  const [projectData, setProjectData] = useState<ProjectInputData>(
+    existingData || {
+      images: [],
+      title: "",
+      tags: [],
+      links: [],
+      description: "",
+    }
+  );
+  useEffect(() => {
+    if (existingData) {
+      setProjectData(existingData);
+    }
+  }, [existingData]);
 
   const [errors, setErrors] = useState<Record<string, string>>({});
 
@@ -73,11 +84,8 @@ const Editor: React.FC = () => {
   };
 
   const handleItemInput = (value: string) => {
-    if ((projectData["tags"] as string[]).length >= 10) {
-      return;
-    }
+    if ((projectData["tags"] as string[]).length >= 10) return;
 
-    setErrors({ fieldName: "" });
     setProjectData((prevData) => ({
       ...prevData,
       ["tags"]: [...(prevData["tags"] as string[]), value],
@@ -100,9 +108,8 @@ const Editor: React.FC = () => {
   };
 
   const handleAddLink = (name: string, url: string) => {
-    if (projectData.links.length >= 6) {
-      return;
-    }
+    if (projectData.links.length >= 6) return;
+
     setProjectData((prevData) => ({
       ...prevData,
       links: [...prevData.links, { name, url }],
@@ -241,19 +248,20 @@ const Editor: React.FC = () => {
           id={"description"}
           label="Add description"
           onTextChange={handleDescription}
+          value={projectData["description"]}
         />
-        <div className="flex gap-5">
+        <div className="flex gap-5 mt-20">
           <div>
             <ThemeButton
               onClick={() => handlePublish().catch((err) => console.error(err))}
             >
-              Publish
+              {existingData ? "Rep" : "P"}ublish
             </ThemeButton>
           </div>
           <div>
-            <SecodaryButton onClick={() => navigate("/")}>
+            <SecondaryButton onClick={() => navigate("/")}>
               Discard
-            </SecodaryButton>
+            </SecondaryButton>
           </div>
         </div>
       </div>

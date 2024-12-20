@@ -58,6 +58,8 @@ export interface CardData {
   title: string;
   authorUsername: string;
   tags: string[] | null;
+  authorId: string;
+  hypeCount?: number;
 }
 
 export interface Tab {

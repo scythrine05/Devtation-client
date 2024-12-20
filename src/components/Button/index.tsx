@@ -6,6 +6,7 @@ interface ButtonProps {
   children: React.ReactNode;
   [key: string]: any;
   loading?: boolean;
+  size?: number;
 }
 
 const TheRealButtonComponent: React.FC<ButtonProps> = ({
@@ -40,13 +41,15 @@ export const ThemeButton: React.FC<ButtonProps> = ({
   );
 };
 
-export const SecodaryButton: React.FC<ButtonProps> = ({
+export const SecondaryButton: React.FC<ButtonProps> = ({
   children,
   loading,
+  size,
   ...props
 }) => {
   return (
     <Button
+      size={size}
       className="bg-[var(--color-dark-theme-sub-background-3)] p-0 border-none font-normal font-display hover:!bg-gray-500 focus:outline-none focus:ring-0 active:outline-none"
       {...props}
     >
@@ -59,10 +62,12 @@ export const SecodaryButton: React.FC<ButtonProps> = ({
 export const DangerButton: React.FC<ButtonProps> = ({
   children,
   loading,
+  size,
   ...props
 }) => {
   return (
     <Button
+      size={size}
       color="failure"
       className="p-0 border-none font-normal font-display focus:outline-none focus:ring-0 active:outline-none"
       {...props}

@@ -6,12 +6,14 @@ interface QuillProps {
   id: string;
   label?: string;
   onTextChange: (value: string) => void;
+  value?: string;
 }
 
 export const QuillEditor: React.FC<QuillProps> = ({
   id,
   label,
   onTextChange,
+  value,
 }) => {
   const editorRef = useRef<HTMLDivElement>(null);
   const [editor, setEditor] = useState<Quill | null>(null);
@@ -39,10 +41,13 @@ export const QuillEditor: React.FC<QuillProps> = ({
         const htmlContent = quill.root.innerHTML;
         onTextChange(htmlContent);
 
-        // Dynamically adjust height
         const newHeight = quill.root.scrollHeight + 20;
         setEditorHeight(newHeight);
       });
+
+      if (value) {
+        quill.clipboard.dangerouslyPasteHTML(value);
+      }
     }
 
     return () => {
@@ -50,7 +55,7 @@ export const QuillEditor: React.FC<QuillProps> = ({
         editor.off("text-change");
       }
     };
-  }, [editor]);
+  }, [editor, value]);
 
   return (
     <div>
@@ -63,7 +68,7 @@ export const QuillEditor: React.FC<QuillProps> = ({
       <div
         ref={editorRef}
         className="bg-red p-2 border rounded"
-        style={{ overflow: "hidden", minHeight: "256px" }} // Set dynamic height
+        style={{ overflow: "hidden", minHeight: `${editorHeight}px` }} // Dynamic height
       />
     </div>
   );

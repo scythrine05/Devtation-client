@@ -5,7 +5,7 @@ import Home from "/src/pages/Home";
 import Account from "/src/pages/Account";
 import Setting from "/src/pages/Setting";
 import View from "/src/pages/View";
-import New from "/src/pages/New";
+import Editor from "../pages/Editor";
 
 import ProtectedRoute from "./Protected.route";
 
@@ -30,11 +30,15 @@ const routes: RouteObject[] = [
         path: "/view/project/:id",
         element: <ProtectedRoute children={<View />} />,
       },
+      {
+        path: "/edit/project/:id",
+        element: <ProtectedRoute children={<Editor />} />,
+      },
     ],
   },
   {
     path: "new",
-    element: <ProtectedRoute children={<New />} />,
+    element: <ProtectedRoute children={<Editor />} />,
   },
 ];
 

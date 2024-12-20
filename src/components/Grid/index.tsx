@@ -14,6 +14,7 @@ const Grid = ({ data }: CardData[] | any) => {
             title={item.title}
             authorUsername={item.authorUsername}
             tags={item.tags}
+            authorId={item.authorId}
           />
         ))}
     </div>
