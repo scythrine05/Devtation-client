@@ -7,7 +7,7 @@ interface CreateProps {
   onNext: () => void;
 }
 
-const CreateModal: React.FC<CreateProps> = ({ onNext }) => {
+const CreateModal: React.FC<CreateProps> = ({}) => {
   return (
     <div>
       {/* <div>
@@ -19,7 +19,7 @@ const CreateModal: React.FC<CreateProps> = ({ onNext }) => {
       <hr /> */}
       <div>
         <Link to="/new">
-        <Button>Create New</Button>
+          <Button>Create New</Button>
         </Link>
       </div>
     </div>

@@ -24,7 +24,6 @@ interface ViewProps {
 }
 
 const View: React.FC<ViewProps> = ({ data }) => {
-  const { user } = useAuth();
   const { projectData, isHype } = data[0];
 
   if (!projectData) {

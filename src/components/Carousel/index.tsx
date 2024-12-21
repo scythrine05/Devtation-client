@@ -133,7 +133,6 @@ export const EditCarouselComponent: React.FC<EditCarouselProps> = ({
 };
 
 export const FlowBiteCarousel: React.FC<ViewCarouselProps> = ({
-  images,
   className,
 }) => {
   return (
