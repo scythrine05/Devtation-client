@@ -9,7 +9,7 @@ interface OauthProps {
 
 const Oauth: React.FC<OauthProps> = ({ authType, disabled }) => {
   return (
-    <div className="flex flex-col w-72 mx-auto my-5">
+    <div className="flex flex-col items-center w-72 mx-auto my-5">
       {/* GitHub Button */}
       <Button
         disabled={disabled}

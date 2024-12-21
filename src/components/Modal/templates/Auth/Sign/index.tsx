@@ -67,7 +67,9 @@ const SignModal: React.FC<SignProps> = ({
   };
   return (
     <div className="w-full flex justify-center flex-col items-center">
-      <Oauth authType={authType} disabled={loading} />
+      <div className="self-center">
+        <Oauth authType={authType} disabled={loading} />
+      </div>
       <TextDivider text="or" />
       <div className="w-full flex justify-center flex-col">
         {authType === "signin" ? (
