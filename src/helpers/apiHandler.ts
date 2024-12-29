@@ -7,12 +7,7 @@ import axios, {
 import { User } from "firebase/auth";
 import { auth } from "/src/configs/firebase";
 
-const apiClient = axios.create({
-  withCredentials: true,
-  headers: {
-    "Content-Type": "application/json",
-  },
-});
+const apiClient = axios.create();
 
 // Add request interceptor
 apiClient.interceptors.request.use(
