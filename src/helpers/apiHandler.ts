@@ -9,7 +9,7 @@ import { auth } from "/src/configs/firebase";
 
 const apiClient = axios.create();
 
-// Add request interceptor
+// Request interceptor
 apiClient.interceptors.request.use(
   async (config) => {
     const user: User | null = auth.currentUser;
@@ -22,7 +22,7 @@ apiClient.interceptors.request.use(
   (error) => Promise.reject(error)
 );
 
-// Add response interceptor
+// Response interceptor
 apiClient.interceptors.response.use(
   (response) => response,
   async (error: AxiosError) => {
