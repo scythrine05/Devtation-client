@@ -49,7 +49,7 @@ apiClient.interceptors.response.use(
 );
 
 export const handleRequest = async (
-  method: "get" | "post" | "put" | "delete",
+  method: "get" | "post" | "put" | "delete" | "options",
   URL: string,
   baseOptions: AxiosRequestConfig
 ): Promise<AxiosResponse | void> => {
