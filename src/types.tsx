@@ -1,5 +1,7 @@
 import { ReactNode } from "react";
 
+export type ImageData = { type: "file" | "url"; value: File | string };
+
 export interface ModalProps {
   show: boolean;
   title: string;
@@ -20,6 +22,7 @@ export interface SignUpData extends SignInData {
 export interface ProfileData extends Omit<SignUpData, "password"> {
   _id: string;
   bio: string;
+  profileImage: string;
 }
 
 export interface ValidationRule {
@@ -37,7 +40,7 @@ export interface ProjectInputData {
     name: string;
     url: string;
   }[];
-  images: File[];
+  images?: File[];
   description: string;
 }
 
@@ -46,11 +49,19 @@ export interface ProjectRespondData extends Omit<ProjectInputData, "images"> {
   authorUsername: string;
   authorId: string;
   hypeCount: number;
-  images: string[];
+  imageUrls: string[];
+  authorProfileImage?: string;
+}
+
+export interface ProjectExistingData extends ProjectInputData {
+  imageUrls?: string[];
+  _id?: string;
+  imageBucketId: string;
 }
 
 export interface ProjectResquestData extends Omit<ProjectInputData, "images"> {
   imageUrls: string[];
+  imageBucketId: string;
 }
 
 export interface CardData {
@@ -59,7 +70,10 @@ export interface CardData {
   authorUsername: string;
   tags: string[] | null;
   authorId: string;
+  authorProfileImage?: string;
   hypeCount?: number;
+  onRemove?: (_id: string) => void;
+  imageUrls?: string[];
 }
 
 export interface Tab {

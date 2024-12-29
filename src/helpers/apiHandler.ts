@@ -1,53 +1,71 @@
-import axios, { AxiosRequestConfig, AxiosResponse, AxiosError } from "axios";
+import axios, {
+  AxiosRequestConfig,
+  AxiosResponse,
+  AxiosError,
+  AxiosRequestHeaders,
+} from "axios";
 import { User } from "firebase/auth";
+import { auth } from "/src/configs/firebase";
+
+const apiClient = axios.create({
+  withCredentials: true,
+  headers: {
+    "Content-Type": "application/json",
+  },
+});
+
+// Add request interceptor
+apiClient.interceptors.request.use(
+  async (config) => {
+    const user: User | null = auth.currentUser;
+    if (user) {
+      const token = await user.getIdToken();
+      config.headers["Authorization"] = `Bearer ${token}`;
+    }
+    return config;
+  },
+  (error) => Promise.reject(error)
+);
+
+// Add response interceptor
+apiClient.interceptors.response.use(
+  (response) => response,
+  async (error: AxiosError) => {
+    if (error.response?.status === 401) {
+      const user: User | null = auth.currentUser;
+      if (user && error.config) {
+        try {
+          const newToken = await user.getIdToken(true);
+
+          error.config.headers = {
+            ...(error.config.headers || {}),
+            Authorization: `Bearer ${newToken}`,
+          } as AxiosRequestHeaders;
+
+          return apiClient.request(error.config);
+        } catch (refreshError) {
+          console.error("Error refreshing token:", refreshError);
+          throw refreshError;
+        }
+      }
+    }
+    return Promise.reject(error);
+  }
+);
 
 export const handleRequest = async (
   method: "get" | "post" | "put" | "delete",
   URL: string,
-  user: User | null,
-  baseOptions: AxiosRequestConfig,
-  refreshTokenEnabled: boolean = true
-): Promise<AxiosResponse | void> => {
-  try {
-    const response = await axios({ method, url: URL, ...baseOptions });
-    return response;
-  } catch (err: any) {
-    const isTokenExpiredError = err.response && err.response.status === 401;
-    if (isTokenExpiredError && refreshTokenEnabled)
-      return handleTokenExpiration(err, method, URL, user, baseOptions);
-    else {
-      console.error("Request error (no token refresh):", err);
-      throw err;
-    }
-  }
-};
-
-export const handleTokenExpiration = async (
-  err: AxiosError | any,
-  method: "get" | "post" | "put" | "delete",
-  URL: string,
-  user: User | null,
   baseOptions: AxiosRequestConfig
 ): Promise<AxiosResponse | void> => {
-  if (axios.isAxiosError(err) && err.response?.status === 401 && user) {
-    try {
-      const _id_token_ = await user.getIdToken(true);
-      const response = await axios({
-        method,
-        url: URL,
-        ...baseOptions,
-        headers: {
-          ...baseOptions.headers,
-          Authorization: `Bearer ${_id_token_}`,
-        },
-      });
-      return response;
-    } catch (retryErr) {
-      console.error("Error during token refresh and retry:", retryErr);
-      throw retryErr;
-    }
-  } else {
-    console.error("Error during request:", err);
-    throw err;
+  try {
+    return await apiClient({
+      method,
+      url: URL,
+      ...baseOptions,
+    });
+  } catch (error) {
+    console.error("Request error:", error);
+    throw error;
   }
 };

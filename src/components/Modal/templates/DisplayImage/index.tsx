@@ -52,6 +52,7 @@ const DPTemplate: React.FC<DPModalProps> = ({
       case "imgUpload":
         return (
           <FileInputComponent
+            name="displayPicture"
             onChange={(
               input: File[] | File | ChangeEvent<HTMLInputElement>
             ) => {
@@ -69,7 +70,7 @@ const DPTemplate: React.FC<DPModalProps> = ({
           />
         );
       case "imgCrop":
-        return <Cropper image={image} setImageUrl={setImageUrl} />;
+        return <Cropper onClose={onClose} image={image} setImageUrl={setImageUrl} />;
       default:
         return null;
     }

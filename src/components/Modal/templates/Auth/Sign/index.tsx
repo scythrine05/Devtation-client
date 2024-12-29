@@ -89,7 +89,9 @@ const SignModal: React.FC<SignProps> = ({
               ))}
               <div className="flex justify-center my-5">
                 <ThemeButton loading={loading} type={"submit"}>
-                  Sign{loading ? "ing" : ""} in
+                  <div className="flex items-center text-responsive-sm">
+                    Sign{loading ? "ing" : ""} in
+                  </div>
                 </ThemeButton>
               </div>
             </form>

@@ -26,7 +26,11 @@ const Account: React.FC<AccountProps> = ({ data }) => {
           <div className="w-32 h-w-32 md:h-40 md:w-40">
             <img
               className="rounded-sm object-cover"
-              src="https://img.freepik.com/free-photo/androgynous-avatar-non-binary-queer-person_23-2151100226.jpg?t=st=1726816029~exp=1726819629~hmac=5a5fadd081fb64009141798aaefcc4731c8d136f37395ec48f08693814236d93&w=826"
+              src={
+                userData.profileImage
+                  ? userData.profileImage
+                  : "https://img.freepik.com/free-photo/androgynous-avatar-non-binary-queer-person_23-2151100226.jpg?t=st=1726816029~exp=1726819629~hmac=5a5fadd081fb64009141798aaefcc4731c8d136f37395ec48f08693814236d93&w=826"
+              }
               alt="author"
             />
           </div>
@@ -51,7 +55,9 @@ const Account: React.FC<AccountProps> = ({ data }) => {
           <Grid data={projectsData} />
         ) : (
           <div className="w-ful text-responsive-regular-lg font-display flex justify-center items-center flex-col pt-20">
-            <div className="mb-5"><p className="text-responsive-oauth">You have no projects</p></div>
+            <div className="mb-5">
+              <p className="text-responsive-oauth">You have no projects</p>
+            </div>
             <Link to="/new">
               <SecondaryButton>
                 <div className="flex justify-between items-center">
@@ -86,7 +92,7 @@ const AccountWithData = () => {
     }
 
     const userId = userData._id;
-    const projectsData = await getProjectsByUserId(user, userId);
+    const projectsData = await getProjectsByUserId(userId);
 
     return [{ userData, projectsData }];
   }, [user, identifier]);

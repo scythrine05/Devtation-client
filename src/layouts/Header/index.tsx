@@ -22,7 +22,7 @@ export default function Header() {
         <Link to="/">
           <div>
             <h1 className="text-responsive-icon font-display font-semibold text-[var(--color-white-1)]">
-              De<span className="font-icon font-extrabold">v</span>hutch
+              De<span className="font-icon font-extrabold">v</span>tation
             </h1>
           </div>
         </Link>
@@ -32,7 +32,7 @@ export default function Header() {
               <ThemeButton>
                 <div className="flex justify-between items-center">
                   <FaPlus />
-                  <span className="ml-1 hidden lg:inline text-sm">
+                  <span className="ml-1 hidden lg:inline text-responsive-sm">
                     New project
                   </span>
                 </div>

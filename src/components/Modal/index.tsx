@@ -1,6 +1,8 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Modal } from "flowbite-react";
 import { ModalProps } from "flowbite-react";
+
+import "./modal.style.css";
 
 const ModalComponent: React.FC<ModalProps> = ({
   show,
@@ -8,6 +10,16 @@ const ModalComponent: React.FC<ModalProps> = ({
   children,
   title,
 }) => {
+
+  // Use useEffect to handle body scroll lock
+  useEffect(() => {
+    if (show) document.body.classList.add("modal-open");
+    else document.body.classList.remove("modal-open");
+    return () => {
+      document.body.classList.remove("modal-open");
+    };
+  }, [show]);
+  
   if (!show) return null;
 
   return (

@@ -118,7 +118,9 @@ const Info: React.FC<InfoProps> = ({ loading, asyncHandler }) => {
         </div>
         <div className="flex justify-center my-5">
           <ThemeButton loading={loading} type="submit">
-            Creat{loading ? "ing" : "e"} Account
+            <div className="flex items-center text-responsive-sm">
+              Creat{loading ? "ing" : "e"} Account
+            </div>
           </ThemeButton>
         </div>
       </form>

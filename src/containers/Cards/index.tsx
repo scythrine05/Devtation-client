@@ -10,7 +10,7 @@ const GridWithData = withDataFetching<CardData>(Grid);
 const Cards = () => {
   const { user } = useAuth();
 
-  const fetchData = useCallback(() => getProjects(user), [user]);
+  const fetchData = useCallback(() => getProjects(), [user]);
 
   return <GridWithData fetchData={fetchData} />;
 };

@@ -66,11 +66,13 @@ export default function DeleteAccount() {
           onClick={() =>
             handleDelete()
               .then(() => navigate("/", { replace: true }))
-              .catch(() => setErrors({ password: "Not valid input"}))
+              .catch(() => setErrors({ password: "Not valid input" }))
           }
           loading={loading}
         >
-          Delet{loading ? "ing" : "e"} account
+          <div className="flex items-start text-responsive-sm">
+            Delet{loading ? "ing" : "e"} account
+          </div>
         </DangerButton>
       </div>
     </div>

@@ -8,10 +8,18 @@ import { CustomTextInputComponent } from "../Inputs/TextInput";
 import { SecondaryButton, ThemeButton } from "/src/components/Button";
 import LinksInput from "../custom/LinksInput";
 
-import { ProjectInputData } from "/src/types";
+import {
+  ImageData,
+  ProjectExistingData,
+  ProjectResquestData,
+} from "/src/types";
 
-import { useAuth } from "/src/hooks/useAuth";
-import { postProject, uploadImages } from "/src/apis/custom";
+import {
+  postProject,
+  uploadImages,
+  updateProjectById,
+  updateImages,
+} from "/src/apis/custom";
 
 import { validateForm } from "/src/helpers/validateForm";
 
@@ -19,68 +27,64 @@ import "./editor.style.css";
 import { EditCarouselComponent } from "../Carousel";
 
 interface EditorProps {
-  existingData?: ProjectInputData | null;
+  existingData?: ProjectExistingData | null;
 }
 
-const Editor: React.FC<EditorProps> = ({ existingData }) => {
-  const { user } = useAuth();
+const EditorComponent: React.FC<EditorProps> = ({ existingData }) => {
   const navigate = useNavigate();
-  const [projectData, setProjectData] = useState<ProjectInputData>(
+  const [projectData, setProjectData] = useState<ProjectExistingData>(
     existingData || {
-      images: [],
+      imageBucketId: "",
       title: "",
       tags: [],
       links: [],
       description: "",
     }
   );
+  const [loading, setLoading] = useState(false);
+  const [images, setImages] = useState<ImageData[]>([]);
+  const optionalFields = ["description", "imageBucketId"];
+  const [errors, setErrors] = useState<Record<string, string>>({});
+
   useEffect(() => {
     if (existingData) {
       setProjectData(existingData);
+      if (existingData.imageUrls) {
+        const urlImages: ImageData[] = existingData.imageUrls.map((url) => ({
+          type: "url",
+          value: url,
+        }));
+        setImages(urlImages);
+      }
     }
   }, [existingData]);
 
-  const [errors, setErrors] = useState<Record<string, string>>({});
-
-  const addImage = (image: File) => {
-    setProjectData((prev) => ({
-      ...prev,
-      images: [...prev.images, image],
-    }));
+  const addImage = (image: ImageData) => {
+    setImages((prev) => [...prev, image]);
   };
 
   const removeImage = (index: number) => {
-    setProjectData((prev) => ({
-      ...prev,
-      images: prev.images.filter((_, i) => i !== index),
-    }));
+    setImages((prev) => prev.filter((_, i) => i !== index));
   };
 
-  const handleChange = (
+  const handleTitleChange = (
     e:
       | React.ChangeEvent<HTMLInputElement>
       | React.ChangeEvent<HTMLTextAreaElement>
   ) => {
     const { name, value } = e.target;
-
-    if (name === "tags") {
-      setProjectData({
-        ...projectData,
-        [name]: value.split(",").map((tagOrLink) => tagOrLink.trim()),
-      });
-    } else {
-      setProjectData({
-        ...projectData,
-        [name]: value,
-      });
-    }
+    setProjectData({
+      ...projectData,
+      [name]: value,
+    });
   };
 
   const handleImageSelect = (files: File[]) => {
-    setProjectData((prevData) => ({
-      ...prevData,
-      images: [...prevData.images, ...files],
+    const newImages: ImageData[] = files.map((file) => ({
+      type: "file",
+      value: file,
     }));
+    setImages((prev) => [...prev, ...newImages]);
   };
 
   const handleItemInput = (value: string) => {
@@ -125,23 +129,21 @@ const Editor: React.FC<EditorProps> = ({ existingData }) => {
 
   const handlePublish = async () => {
     setErrors({});
+    setLoading(true);
+
     try {
-      if (projectData.images.length > 5) {
-        setErrors({
-          ...errors,
-          images: "Maximum of 5 previews",
-        });
+      if (images.length > 5) {
+        setErrors((prev) => ({ ...prev, images: "Maximum of 5 previews" }));
         return;
-      } else if (!projectData.images.length || !projectData.tags.length) {
-        !projectData.images.length
-          ? setErrors({
-              ...errors,
-              images: "Add atleast 1 preview",
-            })
-          : setErrors({
-              ...errors,
-              tags: "Add atleast 1 tag",
-            });
+      }
+
+      if (!images.length || !projectData.tags.length) {
+        if (!images.length) {
+          setErrors((prev) => ({ ...prev, images: "Add at least 1 preview" }));
+        }
+        if (!projectData.tags.length) {
+          setErrors((prev) => ({ ...prev, tags: "Add at least 1 tag" }));
+        }
         return;
       }
 
@@ -149,27 +151,61 @@ const Editor: React.FC<EditorProps> = ({ existingData }) => {
         projectData,
         null,
         null,
-        null
+        optionalFields
       );
-      setErrors(validationErrors);
+      if (Object.keys(validationErrors).length > 0) {
+        setErrors(validationErrors);
+        return;
+      }
 
-      if (Object.keys(validationErrors).length === 0) {
-        const uploadedImageURLs = await uploadImages(user, projectData.images);
+      let updatedProjectData: ProjectResquestData;
 
-        const updatedProjectData = {
+      if (existingData) {
+        const removedImageUrls =
+          existingData.imageUrls?.filter(
+            (url) =>
+              !images.some(
+                (image) => image.type === "url" && image.value === url
+              )
+          ) || [];
+
+        const newImageFiles = images.filter(
+          (image) => image.type === "file"
+        ) as ImageData[];
+        const newImageUrls = images
+          .filter((image) => image.type === "url")
+          .map((image) => image.value as string);
+
+        const updatedImageUrls = await updateImages(
+          newImageFiles.map((image) => image.value as File),
+          removedImageUrls,
+          projectData.imageBucketId
+        );
+        updatedProjectData = {
           ...projectData,
-          imageUrls: uploadedImageURLs,
+          imageUrls: [...newImageUrls, ...updatedImageUrls.uploadedURLs],
         };
 
-        const response = await postProject(user, updatedProjectData);
-        if (response) {
-          navigate("/");
-        }
-        return response;
+        await updateProjectById(existingData._id, updatedProjectData);
+      } else {
+        const uploadResponse = await uploadImages(
+          images.map((image) => image.value as File)
+        );
+
+        updatedProjectData = {
+          ...projectData,
+          imageUrls: uploadResponse.uploadedURLs,
+          imageBucketId: uploadResponse.bucketId,
+        };
+
+        await postProject(updatedProjectData);
       }
+
+      navigate("/");
     } catch (err) {
-      console.error(err);
-      throw err;
+      console.error("Error publishing project:", err);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -180,8 +216,16 @@ const Editor: React.FC<EditorProps> = ({ existingData }) => {
           <label className="block mb-2 px-2 text-responsive-sm text-var(--color-white-2)">
             Add preview (max 5 previews)
           </label>
-          {!projectData.images.length ? (
+          {images.length > 0 ? (
+            <EditCarouselComponent
+              images={images}
+              addImage={addImage}
+              removeImage={removeImage}
+              className="2xl:w-1/2 xl:w-2/4 lg:w-2/3 md:w-3/4 w-full aspect-square sm:aspect-video my-4"
+            />
+          ) : (
             <FileInputComponent
+              name="images"
               onChange={(
                 files: File[] | File | ChangeEvent<HTMLInputElement>
               ) => {
@@ -189,13 +233,6 @@ const Editor: React.FC<EditorProps> = ({ existingData }) => {
               }}
               multiple={true}
               className="2xl:w-1/2 xl:w-2/4 lg:w-2/3 md:w-3/4 w-full aspect-square sm:aspect-video my-4"
-            />
-          ) : (
-            <EditCarouselComponent
-              images={projectData.images}
-              addImage={addImage}
-              removeImage={removeImage}
-              className="2xl:w-1/2 xl:w-2/4 lg:w-2/3 md:w-3/4 sm:aspect-video w-full aspect-square my-4"
             />
           )}
           <div className="mt-1 mb-2 block px-2">
@@ -210,7 +247,7 @@ const Editor: React.FC<EditorProps> = ({ existingData }) => {
           <CustomTextInputComponent
             type="text"
             name="title"
-            handleChange={handleChange}
+            handleChange={handleTitleChange}
             value={projectData["title"]}
             placeholder="Add title"
             helper={errors["title"]}
@@ -221,8 +258,8 @@ const Editor: React.FC<EditorProps> = ({ existingData }) => {
             <ItemInput
               name="tags"
               label="Add tags (max 10 tags)"
-              onAdd={(value: string) => handleItemInput(value)} // Handles adding items
-              onRemove={(value: string) => handleRemoveItem(value)} // Handles removing items
+              onAdd={handleItemInput}
+              onRemove={handleRemoveItem}
               items={
                 Array.isArray(projectData["tags"]) &&
                 typeof projectData["tags"][0] === "string"
@@ -243,24 +280,27 @@ const Editor: React.FC<EditorProps> = ({ existingData }) => {
         </div>
       </div>
       <div className="p-2 sm:p-10 bg-[var(--color-dark-theme-sub-background-2)]">
-        {/* <TabsComponent tabs={tabItems} /> */}
         <QuillEditor
           id={"description"}
           label="Add description"
           onTextChange={handleDescription}
           value={projectData["description"]}
         />
-        <div className="flex gap-5 mt-20">
+        <div className="flex gap-5 my-20">
           <div>
-            <ThemeButton
-              onClick={() => handlePublish().catch((err) => console.error(err))}
-            >
-              {existingData ? "Rep" : "P"}ublish
+            <ThemeButton onClick={handlePublish} loading={loading}>
+              <div className="flex items-start text-responsive-sm">
+                {loading
+                  ? "Publishing"
+                  : existingData
+                  ? "Republish"
+                  : "Publish"}
+              </div>
             </ThemeButton>
           </div>
           <div>
-            <SecondaryButton onClick={() => navigate("/")}>
-              Discard
+            <SecondaryButton onClick={() => navigate("/")} disabled={loading}>
+              <div className="flex items-start text-responsive-sm">Discard</div>
             </SecondaryButton>
           </div>
         </div>
@@ -269,4 +309,4 @@ const Editor: React.FC<EditorProps> = ({ existingData }) => {
   );
 };
 
-export default Editor;
+export default EditorComponent;

@@ -118,10 +118,9 @@ export const updateUserDisplayName = async (
 };
 
 export const logout = async (): Promise<void> => {
-  const user = auth.currentUser;
   try {
     await signOut(auth);
-    await logoutUser(user);
+    await logoutUser();
   } catch (error) {
     console.error(error);
     throw error;
@@ -161,9 +160,7 @@ export const reauthenticate = async (
     switch (method) {
       case "password":
         if (!email || !password) {
-          throw new Error(
-            "Empty Fields"
-          );
+          throw new Error("Empty Fields");
         }
         credential = EmailAuthProvider.credential(
           email,
@@ -201,6 +198,6 @@ export const reauthenticate = async (
     const result = await reauthenticateWithCredential(user, credential);
     return result;
   } catch (err) {
-    throw new Error("Invalid credentials");;
+    throw new Error("Invalid credentials");
   }
 };

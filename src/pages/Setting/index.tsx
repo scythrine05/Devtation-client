@@ -43,6 +43,7 @@ const Setting = ({ data }: ProfileData | any) => {
     username: "",
     email: "",
     bio: "",
+    profileImage: "",
   });
   const [initialFormData, setInitialFormData] = useState(formData);
   const [image, setImage] = useState<File | null>(null);
@@ -151,9 +152,9 @@ const Setting = ({ data }: ProfileData | any) => {
             disabled={isEditing}
             onClick={() => toggleModal(setShowDisplayImageModal)}
           >
-            <div className="flex items-center">
+            <div className="flex items-center text-responsive-sm">
               <div>
-                <RiImageEditFill className="mr-2" size={18} />
+                <RiImageEditFill className="mr-2" size={16} />
               </div>
               Edit image
             </div>
@@ -197,20 +198,22 @@ const Setting = ({ data }: ProfileData | any) => {
                       }
                       loading={loading}
                     >
-                      Updat{loading ? "ing" : "e"}
+                      <div className="text-responsive-sm">
+                        Updat{loading ? "ing" : "e"}
+                      </div>
                     </ThemeButton>
                   </div>
                   <SecondaryButton onClick={handleCancel}>
-                    Cancel
+                    <div className="text-responsive-sm">Cancel</div>
                   </SecondaryButton>
                 </div>
               ) : (
                 <>
                   <div className="mt-5">
                     <SecondaryButton onClick={handleEdit}>
-                      <div className="flex items-center">
+                      <div className="flex items-center text-responsive-sm">
                         <div>
-                          <FiEdit3 className="mr-1" size={18} />
+                          <FiEdit3 className="mr-1" size={16} />
                         </div>
                         Edit profile
                       </div>
@@ -227,9 +230,9 @@ const Setting = ({ data }: ProfileData | any) => {
             onClick={() => toggleModal(setShowDeleteModal)}
             disabled={isEditing}
           >
-            <div className="flex items-start">
+            <div className="flex items-start text-responsive-sm">
               <div>
-                <LuTrash className="mr-1" size={18} />
+                <LuTrash className="mr-1" size={16} />
               </div>
               Delete account
             </div>
@@ -259,7 +262,7 @@ const SettingWithData = () => {
   const { user } = useAuth();
   const fetchData = useCallback(() => {
     const id = user ? user.uid : user;
-    return getUserById(user, id);
+    return getUserById(id);
   }, [user]);
 
   return <NewComponent fetchData={fetchData} />;

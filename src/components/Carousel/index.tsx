@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { Carousel } from "flowbite-react";
+import { ImageData } from "/src/types";
 
 interface EditCarouselProps {
-  images: File[];
-  addImage?: (image: File) => void;
+  images: ImageData[];
+  addImage?: (image: ImageData) => void;
   removeImage?: (index: number) => void;
   className?: string;
 }
@@ -12,7 +13,7 @@ interface ViewCarouselProps extends Omit<EditCarouselProps, "images"> {
   images: string[];
 }
 
-//Icons
+// Icons
 import { MdOutlineAdd } from "react-icons/md";
 import { BsArrowLeftSquareFill, BsArrowRightSquareFill } from "react-icons/bs";
 
@@ -23,26 +24,28 @@ export const EditCarouselComponent: React.FC<EditCarouselProps> = ({
   className,
 }) => {
   const [imageSrcs, setImageSrcs] = useState<string[]>([]);
-
   const [activeIndex, setActiveIndex] = useState<number>(0);
 
   useEffect(() => {
-    if (images.length > 0) {
-      const loadImages = async () => {
-        const srcs = await Promise.all(
-          images.map(
-            (image) =>
-              new Promise<string>((resolve, reject) => {
-                const reader = new FileReader();
-                reader.onload = () => resolve(reader.result as string);
-                reader.onerror = () => reject(new Error("Failed to read file"));
-                reader.readAsDataURL(image);
-              })
-          )
-        );
-        setImageSrcs(srcs);
-      };
+    const loadImages = async () => {
+      const srcs = await Promise.all(
+        images.map((image) => {
+          if (image.type === "url") {
+            return Promise.resolve(image.value as string);
+          } else {
+            return new Promise<string>((resolve, reject) => {
+              const reader = new FileReader();
+              reader.onload = () => resolve(reader.result as string);
+              reader.onerror = () => reject(new Error("Failed to read file"));
+              reader.readAsDataURL(image.value as File);
+            });
+          }
+        })
+      );
+      setImageSrcs(srcs);
+    };
 
+    if (images.length > 0) {
       loadImages().catch((error) =>
         console.error("Error loading images:", error)
       );
@@ -51,29 +54,18 @@ export const EditCarouselComponent: React.FC<EditCarouselProps> = ({
     }
   }, [images]);
 
-  // Add new image
   const handleAddImage = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (!file) return;
-
-    const newImageUrl = URL.createObjectURL(file);
-    setImageSrcs((prevImages) => [...prevImages, newImageUrl]);
-
-    addImage && addImage(file);
-
-    return () => URL.revokeObjectURL(newImageUrl);
+    const newImage: ImageData = { type: "file", value: file };
+    addImage && addImage(newImage);
   };
 
-  // Remove an image
   const handleRemoveImage = (index: number) => {
-    setImageSrcs((prevImages) => prevImages.filter((_, i) => i !== index));
     removeImage && removeImage(index);
-
-    setActiveIndex((prevIndex) => {
-      if (prevIndex === index) return Math.max(prevIndex - 1, 0);
-      if (prevIndex > index) return prevIndex - 1;
-      return prevIndex;
-    });
+    setActiveIndex((prevIndex) =>
+      prevIndex > index ? prevIndex - 1 : Math.max(prevIndex - 1, 0)
+    );
   };
 
   return (
@@ -134,34 +126,25 @@ export const EditCarouselComponent: React.FC<EditCarouselProps> = ({
 
 export const FlowBiteCarousel: React.FC<ViewCarouselProps> = ({
   className,
+  images,
 }) => {
   return (
-    <div className={className}>
+    <div className={`${className} relative`}>
       <Carousel
         slide={false}
-        leftControl={<BsArrowLeftSquareFill size={35} color="#161616"  className="bg-white rounded-lg p-0 border-none"/>}
-        rightControl={<BsArrowRightSquareFill size={35} color="#161616" className="bg-white rounded-lg p-0 border-none" />}
+        leftControl={<BsArrowLeftSquareFill size={25} color="white" />}
+        rightControl={<BsArrowRightSquareFill size={25} color="white" />}
+        className="flowbite-carousel h-64 md:h-96 relative"
       >
-        <img
-          src="https://flowbite.com/docs/images/carousel/carousel-1.svg"
-          alt="..."
-        />
-        <img
-          src="https://flowbite.com/docs/images/carousel/carousel-2.svg"
-          alt="..."
-        />
-        <img
-          src="https://flowbite.com/docs/images/carousel/carousel-3.svg"
-          alt="..."
-        />
-        <img
-          src="https://flowbite.com/docs/images/carousel/carousel-4.svg"
-          alt="..."
-        />
-        <img
-          src="https://flowbite.com/docs/images/carousel/carousel-5.svg"
-          alt="..."
-        />
+        {images.map((src, index) => (
+          <div key={index} className="h-64 md:h-96 relative">
+            <img
+              src={src}
+              alt={`Slide ${index + 1}`}
+              className="object-contain w-full h-full"
+            />
+          </div>
+        ))}
       </Carousel>
     </div>
   );

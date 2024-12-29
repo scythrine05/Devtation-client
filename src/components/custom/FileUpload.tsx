@@ -4,12 +4,14 @@ interface FileInputProps {
   onChange: (files: File[] | File | ChangeEvent<HTMLInputElement>) => void;
   multiple?: boolean;
   className?: string;
+  name: string;
 }
 
 const FileInputComponent: React.FC<FileInputProps> = ({
   onChange,
   multiple = false,
   className = "h-64 w-full",
+  name,
 }) => {
   const [isDragging, setIsDragging] = useState(false);
 
@@ -82,6 +84,7 @@ const FileInputComponent: React.FC<FileInputProps> = ({
         <input
           id="file-upload"
           type="file"
+          name={name}
           className="hidden"
           multiple={multiple}
           onChange={handleFileChange}

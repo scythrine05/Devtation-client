@@ -5,6 +5,7 @@ import { Card, Kbd } from "flowbite-react";
 import { useAuth } from "/src/hooks/useAuth";
 import { OptionsDropdownComponent } from "../Dropdown";
 import { DangerButton, SecondaryButton } from "../Button";
+import { deleteProjectById } from "/src/apis/custom";
 
 const CardComponent: React.FC<CardData> = ({
   _id,
@@ -12,16 +13,36 @@ const CardComponent: React.FC<CardData> = ({
   authorUsername,
   tags,
   authorId,
+  imageUrls,
+  authorProfileImage,
+  onRemove,
 }) => {
   const [deleteMode, setDeleteMode] = useState(false);
+  const [loading, setLoading] = useState(false);
   const { user } = useAuth();
   const isOwner = user?.uid === authorId;
+  const defaultThumbnail =
+    "https://cdn.pixabay.com/photo/2016/07/17/21/44/mountains-1524804_1280.png";
+  const defaultProfileImage =
+    "https://img.freepik.com/free-photo/androgynous-avatar-non-binary-queer-person_23-2151100226.jpg?t=st=1726816029~exp=1726819629~hmac=5a5fadd081fb64009141798aaefcc4731c8d136f37395ec48f08693814236d93&w=826";
   const truncateTitle = (title: string, wordLimit: number = 10) => {
     const words = title.split(" ");
     if (words.length > wordLimit) {
       return words.slice(0, wordLimit).join(" ") + "...";
     }
     return title;
+  };
+
+  const handleDelete = async () => {
+    setLoading(true);
+    try {
+      await deleteProjectById(_id);
+      onRemove && onRemove(_id);
+    } catch (err) {
+      throw err;
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -38,7 +59,7 @@ const CardComponent: React.FC<CardData> = ({
                 <div className="w-8 h-8">
                   <img
                     className="rounded-sm w-full object-cover"
-                    src="https://img.freepik.com/free-photo/androgynous-avatar-non-binary-queer-person_23-2151100226.jpg?t=st=1726816029~exp=1726819629~hmac=5a5fadd081fb64009141798aaefcc4731c8d136f37395ec48f08693814236d93&w=826"
+                    src={authorProfileImage ? authorProfileImage : defaultProfileImage}
                     alt="author"
                   />
                 </div>
@@ -60,9 +81,9 @@ const CardComponent: React.FC<CardData> = ({
               >
                 <div className="w-full">
                   <img
-                    src="https://cdn.pixabay.com/photo/2016/07/17/21/44/mountains-1524804_1280.png"
+                    src={imageUrls ? imageUrls[0] : defaultThumbnail}
                     alt="caption"
-                    className="rounded-sm object-cover w-full"
+                    className="rounded-sm object-cover w-full h-48"
                   />
                 </div>
                 <div className="line-clamp-3 mt-5">
@@ -108,10 +129,13 @@ const CardComponent: React.FC<CardData> = ({
             <p>Deleting the project cannot be undone</p>
           </div>
           <div className="mt-5 flex flex-col items-center justify-center gap-4">
-            <DangerButton>
-              <span className="text-xs">Delete</span>
+            <DangerButton onClick={handleDelete} loading={loading}>
+              <span className="text-xs">{loading ? "" : "Delete"}</span>
             </DangerButton>
-            <SecondaryButton onClick={() => setDeleteMode(false)}>
+            <SecondaryButton
+              disabled={loading}
+              onClick={() => setDeleteMode(false)}
+            >
               <span className="text-xs">Cancel</span>
             </SecondaryButton>
           </div>

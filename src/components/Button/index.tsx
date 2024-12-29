@@ -34,6 +34,7 @@ export const ThemeButton: React.FC<ButtonProps> = ({
     <Button
       className="bg-devtiny-theme p-0 border-none font-normal font-display hover:!bg-devtiny-theme-light focus:outline-none focus:ring-0 active:outline-none"
       {...props}
+      disabled={loading}
     >
       {loading ? <Spinner size="sm" className="mx-2" color="purple" /> : null}
       {children}

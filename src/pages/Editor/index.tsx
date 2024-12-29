@@ -22,12 +22,11 @@ export default function Editor() {
       }
 
       try {
-        const data = await getProjectById(user, id);
+        const data = await getProjectById(id);
         if (data.authorId !== user?.uid) {
           setIsAuthor(false);
           navigate("/");
         } else {
-          console.log(data);
           setProjectData(data);
         }
       } catch (err) {

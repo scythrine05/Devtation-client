@@ -14,58 +14,43 @@ const baseOptions = {
 
 export const setToken = async (token: string) => {
   const URL = `${API_URL}/auth/set-token`;
-  return handleRequest(
-    "get",
-    URL,
-    null,
-    {
-      ...baseOptions,
-      headers: {
-        ...baseOptions.headers,
-        Authorization: `Bearer ${token}`,
-      },
+  return await handleRequest("get", URL, {
+    ...baseOptions,
+    headers: {
+      ...baseOptions.headers,
+      Authorization: `Bearer ${token}`,
     },
-    false
-  );
+  });
 };
 
-export const logoutUser = async (user: User | null) => {
+export const logoutUser = async () => {
   const URL = `${API_URL}/auth/logout`;
-  return handleRequest("delete", URL, user, baseOptions);
+  return await handleRequest("delete", URL, baseOptions);
 };
 
 //Users APIs
 
 export const createUser = async (userData: SignUpData, token: string) => {
   const URL = `${API_URL}/user`;
-  return handleRequest(
-    "post",
-    URL,
-    null,
-    {
-      ...baseOptions,
-      headers: {
-        ...baseOptions.headers,
-        Authorization: `Bearer ${token}`,
-      },
-      data: userData,
+  return await handleRequest("post", URL, {
+    ...baseOptions,
+    headers: {
+      ...baseOptions.headers,
+      Authorization: `Bearer ${token}`,
     },
-    false
-  );
+    data: userData,
+  });
 };
 
-export const getUserById = async (user: User | null, userId: string | null) => {
+export const getUserById = async (userId: string | null) => {
   const URL = `${API_URL}/user/userId/${userId}`;
-  const response = await handleRequest("get", URL, user, baseOptions);
+  const response = await handleRequest("get", URL, baseOptions);
   return response?.data;
 };
 
-export const getUserByUsername = async (
-  user: User | null,
-  username: string | null
-) => {
+export const getUserByUsername = async (username: string | null) => {
   const URL = `${API_URL}/user/username/${username}`;
-  const response = await handleRequest("get", URL, user, baseOptions);
+  const response = await handleRequest("get", URL, baseOptions);
   return response?.data;
 };
 
@@ -75,7 +60,7 @@ export const updateUserById = async (
 ) => {
   const userId = user ? user.uid : user;
   const URL = `${API_URL}/user/${userId}`;
-  return await handleRequest("put", URL, user, {
+  return await handleRequest("put", URL, {
     ...baseOptions,
     data: userData,
   });
@@ -84,7 +69,7 @@ export const updateUserById = async (
 export const removeUserById = async (user: User | null) => {
   const userId = user ? user.uid : user;
   const URL = `${API_URL}/user/${userId}`;
-  return handleRequest("delete", URL, user, baseOptions);
+  return await handleRequest("delete", URL, baseOptions);
 };
 
 //Account APIs
@@ -96,51 +81,45 @@ export const getUserAccount = async (
   const URL = username
     ? `${API_URL}/account/username/${username}`
     : `${API_URL}/account/userId/${userId}`;
-  const response = await handleRequest("get", URL, user, baseOptions);
+  const response = await handleRequest("get", URL, baseOptions);
   return response?.data;
 };
 
 //Project APIs
 
-export const getProjects = async (user: User | null) => {
+export const getProjects = async () => {
   const URL = `${API_URL}/project`;
-  const response = await handleRequest("get", URL, user, baseOptions);
+  const response = await handleRequest("get", URL, baseOptions);
   return response?.data;
 };
 
-export const getProjectsByUserId = async (
-  user: User | null,
-  userId: string | null
-) => {
+export const getProjectsByUserId = async (userId: string | null) => {
   const URL = `${API_URL}/project/user/${userId}`;
-  const response = await handleRequest("get", URL, user, baseOptions);
+  const response = await handleRequest("get", URL, baseOptions);
   return response?.data;
 };
 
-export const getProjectById = async (
-  user: User | null,
-  projectId: string | null
-) => {
+export const getProjectById = async (projectId: string | null) => {
   const URL = `${API_URL}/project/${projectId}`;
-  const response = await handleRequest("get", URL, user, baseOptions);
+  const response = await handleRequest("get", URL, baseOptions);
   return response?.data;
 };
 
-export const postProject = async (
-  user: User | null,
-  projectData: ProjectResquestData
-) => {
+export const postProject = async (projectData: ProjectResquestData) => {
   const URL = `${API_URL}/project`;
-  return handleRequest("post", URL, user, {
+  return await handleRequest("post", URL, {
     ...baseOptions,
     data: projectData,
   });
 };
 
-export const hypeProject = async (user: User | null, projectId: string) => {
+export const hypeProject = async (
+  user: User | null,
+  projectId: string | null
+) => {
   const userId = user ? user.uid : user;
   const URL = `${API_URL}/project/hype`;
-  return handleRequest("post", URL, user, {
+  return await handleRequest("post", URL, {
     ...baseOptions,
     data: { projectId, userId },
   });
@@ -151,36 +130,49 @@ export const isProjectHypedByUser = async (
   userId: string
 ): Promise<boolean> => {
   const URL = `${API_URL}/project/${projectId}/ishyped/${userId}`;
-  const response = await handleRequest("get", URL, null, baseOptions, false);
+  const response = await handleRequest("get", URL, baseOptions);
   return response?.data.isHype ?? false;
+};
+
+export const updateProjectById = async (
+  projectId: string | undefined,
+  projectData: ProjectResquestData
+) => {
+  const URL = `${API_URL}/project/${projectId}`;
+  return await handleRequest("put", URL, {
+    ...baseOptions,
+    data: projectData,
+  });
+};
+
+export const deleteProjectById = async (projectId: string | null) => {
+  const URL = `${API_URL}/project/${projectId}`;
+  return await handleRequest("delete", URL, baseOptions);
 };
 
 export const deleteProjectsByUserId = async (user: User | null) => {
   const userId = user ? user.uid : user;
   const URL = `${API_URL}/project/${userId}`;
-  return handleRequest("delete", URL, user, baseOptions);
+  return await handleRequest("delete", URL, baseOptions);
 };
 
 //token test API
-export const testUser = async (user: User | null) => {
+export const testUser = async () => {
   const URL = `${API_URL}/auth/check-token`;
-  return handleRequest("get", URL, user, baseOptions);
+  return await handleRequest("get", URL, baseOptions);
 };
 
 //File API
 
-export const uploadImages = async (
-  user: User | null,
-  files: File[]
-): Promise<string[]> => {
+export const uploadImages = async (files: File[]) => {
   const URL = `${API_URL}/file-upload/images`;
-  const formData = new FormData();
 
+  const formData = new FormData();
   files.forEach((file) => {
     formData.append("images", file);
   });
 
-  const response = await handleRequest("post", URL, user, {
+  const response = await handleRequest("post", URL, {
     ...baseOptions,
     headers: {
       ...baseOptions.headers,
@@ -192,15 +184,40 @@ export const uploadImages = async (
   return response?.data ?? [];
 };
 
-export const uploadDisplayImage = async (
-  user: User | null,
-  file: File
-): Promise<string> => {
-  const URL = `${API_URL}/file-upload/display-image`;
+export const updateImages = async (
+  files: File[] | null,
+  urls: string[] | null,
+  bucketId: string
+) => {
+  const URL = `${API_URL}/file-upload/images`;
+
   const formData = new FormData();
 
-  formData.append("image", file);
-  const response = await handleRequest("post", URL, user, {
+  if (files)
+    files.forEach((file) => {
+      formData.append("images", file);
+    });
+  formData.append("bucketId", bucketId);
+  formData.append("urls", JSON.stringify(urls));
+
+  const response = await handleRequest("put", URL, {
+    ...baseOptions,
+    headers: {
+      ...baseOptions.headers,
+      "Content-Type": "multipart/form-data",
+    },
+    data: formData,
+  });
+
+  return response?.data ?? [];
+};
+
+export const uploadDisplayImage = async (file: File) => {
+  const URL = `${API_URL}/file-upload/display-image`;
+
+  const formData = new FormData();
+  formData.append("displayPicture", file);
+  const response = await handleRequest("post", URL, {
     ...baseOptions,
     headers: {
       ...baseOptions.headers,
@@ -218,28 +235,22 @@ export const verifyUniqueUsername = async (
   username: string
 ): Promise<boolean> => {
   const URL = `${API_URL}/user/verify-unique-field/username/${username}`;
-  const response = await handleRequest("get", URL, null, baseOptions, false);
+  const response = await handleRequest("get", URL, baseOptions);
   return response?.data.exists ?? false;
 };
 
 export const verifyUniqueEmail = async (email: string) => {
   const URL = `${API_URL}/user/verify-unique-field/email/${email}`;
-  const response = await handleRequest("get", URL, null, baseOptions, false);
+  const response = await handleRequest("get", URL, baseOptions);
   return response?.data.exists ?? false;
 };
 
 export const verifyRecaptchaToken = async (captchaValue: string) => {
   const URL = `${API_URL}/user/verify-captcha`;
-  const response = await handleRequest(
-    "post",
-    URL,
-    null,
-    {
-      ...baseOptions,
-      data: { captchaValue },
-    },
-    false
-  );
+  const response = await handleRequest("post", URL, {
+    ...baseOptions,
+    data: { captchaValue },
+  });
   if (response && response.data) {
     const { success } = response.data;
     return success;

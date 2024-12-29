@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef } from "react";
 import Quill from "quill";
 import "quill/dist/quill.snow.css";
 
@@ -16,59 +16,54 @@ export const QuillEditor: React.FC<QuillProps> = ({
   value,
 }) => {
   const editorRef = useRef<HTMLDivElement>(null);
-  const [editor, setEditor] = useState<Quill | null>(null);
-  const [editorHeight, setEditorHeight] = useState<number>(256); // Default height: 256px (h-64)
-
-  const modules = {
-    toolbar: [
-      [{ size: ["small", false, "large", "huge"] }],
-      ["bold", "italic", "underline"],
-      [{ list: "ordered" }, { list: "bullet" }],
-    ],
-  };
+  const quillRef = useRef<Quill | null>(null);
 
   useEffect(() => {
-    if (editorRef.current && !editor) {
+    if (editorRef.current && !quillRef.current) {
+      // Initialize Quill
       const quill = new Quill(editorRef.current, {
-        placeholder: "Write description...",
         theme: "snow",
-        modules: modules,
+        placeholder: "Write description...",
+        modules: {
+          toolbar: [
+            [{ size: ["small", false, "large", "huge"] }],
+            ["bold", "italic", "underline"],
+            [{ list: "ordered" }, { list: "bullet" }],
+          ],
+        },
       });
 
-      setEditor(quill);
-
+      // Listen to "text-change" events
       quill.on("text-change", () => {
         const htmlContent = quill.root.innerHTML;
         onTextChange(htmlContent);
-
-        const newHeight = quill.root.scrollHeight + 20;
-        setEditorHeight(newHeight);
       });
 
-      if (value) {
-        quill.clipboard.dangerouslyPasteHTML(value);
-      }
+      quillRef.current = quill;
     }
+  }, [onTextChange]);
 
-    return () => {
-      if (editor) {
-        editor.off("text-change");
-      }
-    };
-  }, [editor, value]);
+  useEffect(() => {
+    const quill = quillRef.current;
+    if (quill && value !== quill.root.innerHTML) {
+      quill.root.innerHTML = value || "";
+    }
+  }, [value]);
 
   return (
     <div>
-      <label
-        htmlFor={id}
-        className="block mb-2 px-2 text-responsive-sm text-var(--color-white-2)"
-      >
-        {label}
-      </label>
+      {label && (
+        <label
+          htmlFor={id}
+          className="block mb-2 px-2 text-responsive-sm text-var(--color-white-2)"
+        >
+          {label}
+        </label>
+      )}
       <div
         ref={editorRef}
         className="bg-red p-2 border rounded"
-        style={{ overflow: "hidden", minHeight: `${editorHeight}px` }} // Dynamic height
+        style={{ minHeight: "256px", overflow: "hidden" }}
       />
     </div>
   );

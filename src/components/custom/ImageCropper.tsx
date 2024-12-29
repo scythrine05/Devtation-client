@@ -2,18 +2,22 @@ import React, { useState, useEffect } from "react";
 import Cropper, { Area } from "react-easy-crop";
 import { ThemeButton } from "../Button";
 import LoadingComponent from "../Loading";
-import { useAuth } from "/src/hooks/useAuth";
 
 interface ImageCropperProps {
   image: File | null;
   setImageUrl: React.Dispatch<React.SetStateAction<string | null>>;
+  onClose?: () => void;
 }
 
 //Icons
 import { MdOutlineCrop } from "react-icons/md";
 import { uploadDisplayImage } from "/src/apis/custom";
 
-const ImageCropper: React.FC<ImageCropperProps> = ({ image, setImageUrl }) => {
+const ImageCropper: React.FC<ImageCropperProps> = ({
+  image,
+  setImageUrl,
+  onClose,
+}) => {
   const [imageSrc, setImageSrc] = useState<string | null>(null);
   const [crop, setCrop] = useState({ x: 0, y: 0 });
   const [zoom, setZoom] = useState(1);
@@ -23,7 +27,7 @@ const ImageCropper: React.FC<ImageCropperProps> = ({ image, setImageUrl }) => {
     width: 200,
     height: 200,
   });
-  const { user } = useAuth();
+  const [loading, setLoading] = useState(false);
 
   //Extract image source from File format
   useEffect(() => {
@@ -41,7 +45,7 @@ const ImageCropper: React.FC<ImageCropperProps> = ({ image, setImageUrl }) => {
     const updateCropSize = () => {
       const screenWidth = window.innerWidth;
 
-      const newAspectRatio = screenWidth > 768 ? 16 / 9 : 4 / 3; // Use 16:9 for desktop, 4:3 for mobile
+      const newAspectRatio = screenWidth > 768 ? 16 / 9 : 4 / 3;
       setAspectRatio(newAspectRatio);
 
       const cropWidth = Math.min(screenWidth * 0.6, 300);
@@ -62,6 +66,7 @@ const ImageCropper: React.FC<ImageCropperProps> = ({ image, setImageUrl }) => {
   };
 
   const cropImage = async () => {
+    setLoading(true);
     if (!imageSrc || !croppedArea || !image) return;
 
     const canvas = document.createElement("canvas");
@@ -84,10 +89,15 @@ const ImageCropper: React.FC<ImageCropperProps> = ({ image, setImageUrl }) => {
         const file = new File([blob], image.name, { type: image.type });
 
         try {
-          const imgUrl = await uploadDisplayImage(user, file);
-          setImageUrl(imgUrl); //set image url to display picture component
+          const response = await uploadDisplayImage(file);
+          response.user && setImageUrl(response.user.profileImage);
+          if (onClose) {
+            onClose();
+          }
         } catch (error) {
           console.error("Error uploading cropped image:", error);
+        } finally {
+          setLoading(false);
         }
       }, image.type);
     };
@@ -101,8 +111,8 @@ const ImageCropper: React.FC<ImageCropperProps> = ({ image, setImageUrl }) => {
             image={imageSrc}
             crop={crop}
             zoom={zoom}
-            aspect={aspectRatio} // Responsive aspect ratio
-            cropSize={cropSize} // Responsive crop size
+            aspect={aspectRatio}
+            cropSize={cropSize}
             onCropChange={setCrop}
             onZoomChange={setZoom}
             onCropComplete={onCropComplete}
@@ -114,12 +124,18 @@ const ImageCropper: React.FC<ImageCropperProps> = ({ image, setImageUrl }) => {
       </div>
       {/* Crop Button */}
       <div className="mt-4">
-        <ThemeButton onClick={cropImage} disabled={!imageSrc}>
-          <div className="flex items-center">
-            <div>
-              <MdOutlineCrop className="mr-1" size={18} />
-            </div>
-            Crop and publish
+        <ThemeButton onClick={cropImage} disabled={!imageSrc} loading={loading}>
+          <div className="flex items-center text-responsive-sm">
+            {loading ? (
+              "Publishing"
+            ) : (
+              <>
+                <div>
+                  <MdOutlineCrop className="mr-1" size={18} />
+                </div>
+                Crop and publish
+              </>
+            )}
           </div>
         </ThemeButton>
       </div>
