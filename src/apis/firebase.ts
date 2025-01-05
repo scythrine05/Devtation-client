@@ -21,7 +21,7 @@ import {
   logoutUser,
   createUser,
   removeUserById,
-  deleteProjectsByUserId,
+  deleteAllProjectsByUserId,
 } from "./custom";
 import { SignInData, SignUpData } from "/src/types";
 
@@ -134,7 +134,7 @@ export const deleteAccount = async (): Promise<void> => {
     return;
   }
   try {
-    await deleteProjectsByUserId(user); // Delete all User Projects
+    await deleteAllProjectsByUserId(user); // Delete all User Projects
     await removeUserById(user); // Remove from Database
     await deleteUser(user); // Remove from Firebase Authentication
   } catch (error) {

@@ -46,7 +46,7 @@ const CardComponent: React.FC<CardData> = ({
   };
 
   return (
-    <Card className="w-full h-auto bg-[var(--color-dark-theme-sub-background-2)] hover:bg-[var(--color-dark-theme-sub-background)] border-none relative flex flex-col justify-between">
+    <Card className="w-full md:w-70 h-auto bg-[var(--color-dark-theme-sub-background-2)] hover:bg-[var(--color-dark-theme-sub-background)] border-none relative flex flex-col justify-between">
       {!deleteMode ? (
         <>
           {/* Author Section */}
@@ -58,7 +58,7 @@ const CardComponent: React.FC<CardData> = ({
               >
                 <div className="w-8 h-8">
                   <img
-                    className="rounded-sm w-full object-cover"
+                    className="rounded-sm w-full object-center"
                     src={authorProfileImage ? authorProfileImage : defaultProfileImage}
                     alt="author"
                   />
@@ -83,7 +83,7 @@ const CardComponent: React.FC<CardData> = ({
                   <img
                     src={imageUrls ? imageUrls[0] : defaultThumbnail}
                     alt="caption"
-                    className="rounded-sm object-cover w-full h-48"
+                    className="rounded-sm object-cover w-full h-44"
                   />
                 </div>
                 <div className="line-clamp-3 mt-5">

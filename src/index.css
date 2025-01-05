@@ -44,9 +44,9 @@
   --font-size-sm-max: 13px;
   --font-size-sm-var: 0.5vw + var(--font-size-sm-min);
   --font-size-sm-min: 10px;
-  --font-size-icon-max: 1.6rem;
+  --font-size-icon-max: 1.3rem;
   --font-size-icon-var: 1vw + var(--font-size-icon-min);
-  --font-size-icon-min: 1rem;
+  --font-size-icon-min: 0.9rem;
   --font-size-oauth-max: 0.9rem;
   --font-size-oauth-var: 1vw + var(--font-size-oauth-min);
   --font-size-oauth-min: 0.5rem;

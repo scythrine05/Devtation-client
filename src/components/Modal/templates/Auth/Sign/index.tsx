@@ -110,7 +110,7 @@ const SignModal: React.FC<SignProps> = ({
             <div className="flex justify-center">
               <Info />
             </div>
-            <div className="text-center text-responsive-sm">
+            <div className="text-center text-responsive-sm mb-10">
               Already have an account ?{"  "}
               <span
                 onClick={onToggle}

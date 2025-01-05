@@ -12,7 +12,7 @@ export default function Header() {
   const { user } = useAuth();
   return (
     <header
-      className={`p-3 px-5 box-border w-full ${
+      className={`py-2 px-5 box-border w-full ${
         user
           ? "bg-[var(--color-dark-theme-sub-background-2)]"
           : "bg-[var(--color-dark-theme-background)]"
@@ -21,8 +21,10 @@ export default function Header() {
       <div className="flex items-center justify-between">
         <Link to="/">
           <div>
-            <h1 className="text-responsive-icon font-display font-semibold text-[var(--color-white-1)]">
-              De<span className="font-icon font-extrabold">v</span>tation
+            <h1 className="text-responsive-icon font-display font-semibold text-[var(--color-white-1)] select-none">
+              <span className="font-icon font-extrabold">&lt;</span>De
+              <span className="font-icon font-extrabold">v</span>tation
+              <span className="font-icon font-extrabold">&gt;</span>
             </h1>
           </div>
         </Link>

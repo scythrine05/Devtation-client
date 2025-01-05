@@ -150,9 +150,9 @@ export const deleteProjectById = async (projectId: string | null) => {
   return await handleRequest("delete", URL, baseOptions);
 };
 
-export const deleteProjectsByUserId = async (user: User | null) => {
+export const deleteAllProjectsByUserId = async (user: User | null) => {
   const userId = user ? user.uid : user;
-  const URL = `${API_URL}/project/${userId}`;
+  const URL = `${API_URL}/project/user/${userId}`;
   return await handleRequest("delete", URL, baseOptions);
 };
 
@@ -163,7 +163,6 @@ export const testUser = async () => {
 };
 
 //File API
-
 export const uploadImages = async (files: File[]) => {
   const URL = `${API_URL}/file-upload/images`;
 
@@ -186,7 +185,7 @@ export const uploadImages = async (files: File[]) => {
 
 export const updateImages = async (
   files: File[] | null,
-  urls: string[] | null,
+  removedUrls: string[] | null,
   bucketId: string
 ) => {
   const URL = `${API_URL}/file-upload/images`;
@@ -198,7 +197,7 @@ export const updateImages = async (
       formData.append("images", file);
     });
   formData.append("bucketId", bucketId);
-  formData.append("urls", JSON.stringify(urls));
+  formData.append("removedUrls", JSON.stringify(removedUrls));
 
   const response = await handleRequest("put", URL, {
     ...baseOptions,
@@ -230,7 +229,6 @@ export const uploadDisplayImage = async (file: File) => {
 };
 
 //Open APIs
-
 export const verifyUniqueUsername = async (
   username: string
 ): Promise<boolean> => {

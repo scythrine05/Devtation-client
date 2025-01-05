@@ -8,7 +8,7 @@ const Grid = ({ data }: { data: CardData[] }) => {
   const [gridData, setGridData] = useState<CardData[]>([]);
 
   useEffect(() => {
-    setGridData(data); // Set initial data
+    setGridData(Array.isArray(data) ? data : []);
   }, [data]);
 
   const handleRemove = (id: string) => {

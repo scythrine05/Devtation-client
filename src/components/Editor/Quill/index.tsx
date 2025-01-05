@@ -26,9 +26,8 @@ export const QuillEditor: React.FC<QuillProps> = ({
         placeholder: "Write description...",
         modules: {
           toolbar: [
-            [{ size: ["small", false, "large", "huge"] }],
+            [{ size: ["small", "normal", "large"] }],
             ["bold", "italic", "underline"],
-            [{ list: "ordered" }, { list: "bullet" }],
           ],
         },
       });
