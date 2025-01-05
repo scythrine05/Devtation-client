@@ -16,7 +16,7 @@ const Grid = ({ data }: { data: CardData[] }) => {
   };
 
   return (
-    <div className="grid gap-6 p-5 grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5">
+    <div className="grid p-5 grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 auto-rows-fr">
       {gridData.length > 0 &&
         gridData.map((item) => (
           <Card

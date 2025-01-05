@@ -25,12 +25,12 @@ const CardComponent: React.FC<CardData> = ({
     "https://cdn.pixabay.com/photo/2016/07/17/21/44/mountains-1524804_1280.png";
   const defaultProfileImage =
     "https://img.freepik.com/free-photo/androgynous-avatar-non-binary-queer-person_23-2151100226.jpg?t=st=1726816029~exp=1726819629~hmac=5a5fadd081fb64009141798aaefcc4731c8d136f37395ec48f08693814236d93&w=826";
-  const truncateTitle = (title: string, wordLimit: number = 10) => {
-    const words = title.split(" ");
-    if (words.length > wordLimit) {
-      return words.slice(0, wordLimit).join(" ") + "...";
+
+  const truncateText = (text: string, charLimit: number = 25) => {
+    if (text.length > charLimit) {
+      return text.slice(0, charLimit) + "...";
     }
-    return title;
+    return text;
   };
 
   const handleDelete = async () => {
@@ -46,7 +46,7 @@ const CardComponent: React.FC<CardData> = ({
   };
 
   return (
-    <Card className="w-full md:w-70 h-auto bg-[var(--color-dark-theme-sub-background-2)] hover:bg-[var(--color-dark-theme-sub-background)] border-none relative flex flex-col justify-between">
+    <Card className="w-full md:w-72 h-auto bg-[var(--color-dark-theme-sub-background-2)] hover:bg-[var(--color-dark-theme-sub-background)] border-none relative flex flex-col justify-between">
       {!deleteMode ? (
         <>
           {/* Author Section */}
@@ -59,7 +59,11 @@ const CardComponent: React.FC<CardData> = ({
                 <div className="w-8 h-8">
                   <img
                     className="rounded-sm w-full object-center"
-                    src={authorProfileImage ? authorProfileImage : defaultProfileImage}
+                    src={
+                      authorProfileImage
+                        ? authorProfileImage
+                        : defaultProfileImage
+                    }
                     alt="author"
                   />
                 </div>
@@ -88,7 +92,7 @@ const CardComponent: React.FC<CardData> = ({
                 </div>
                 <div className="line-clamp-3 mt-5">
                   <h1 className="text-responsive-regular">
-                    {truncateTitle(title)}
+                    {truncateText(title)}
                   </h1>
                 </div>
               </Link>
@@ -101,7 +105,7 @@ const CardComponent: React.FC<CardData> = ({
                           key={index}
                           className="mx-0.1 p-1 px-2 bg-[#32323a] border-none text-white font-normal"
                         >
-                          {item}
+                          {truncateText(item, 10)}
                         </Kbd>
                       ))}
                     {tags && tags.length > 2 && (

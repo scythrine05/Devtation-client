@@ -22,8 +22,7 @@ export default function Header() {
         <Link to="/">
           <div>
             <h1 className="text-responsive-icon font-display font-semibold text-[var(--color-white-1)] select-none">
-              <span className="font-icon font-extrabold">&lt;</span>De
-              <span className="font-icon font-extrabold">v</span>tation
+              <span className="font-icon font-extrabold">&lt;</span>devtation
               <span className="font-icon font-extrabold">&gt;</span>
             </h1>
           </div>

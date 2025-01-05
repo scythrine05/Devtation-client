@@ -33,9 +33,9 @@ const View: React.FC<ViewProps> = ({ data }) => {
   }
 
   return (
-    <div className="p-1 sm:p-5 flex flex-col min-h-screen bg-[var(--color-dark-theme-background)]">
+    <div className="p-1 flex flex-col min-h-screen bg-[var(--color-dark-theme-background)]">
       <div className="p-2 sm:p-10 bg-[var(--color-dark-theme-sub-background-2)]">
-        <div className="flex items-center my-5">
+        <div className="flex items-center sm:my-1 my-5">
           <Link
             to={`/account/${projectData.authorUsername}`}
             className="flex items-center hover:text-[var(--color-devtiny-theme-light)] text-white"
@@ -59,23 +59,23 @@ const View: React.FC<ViewProps> = ({ data }) => {
         <div>
           <FlowBiteCarousel
             images={projectData.imageUrls}
-            className="2xl:w-1/2 xl:w-2/4 lg:w-2/3 md:w-3/4 sm:aspect-video w-full aspect-square my-4"
+            className="2xl:w-2/4 xl:w-2/4 lg:w-2/3 md:w-3/4 sm:aspect-video w-full aspect-square md:my-4"
           />
         </div>
-        <div className="mb-10 md:w-3/4 w-full">
+        <div className="mb-5 md:w-3/4 w-full">
           <h1 className="block text-responsive-medium w-full p-1.5 px-2">
             {projectData.title}
           </h1>
         </div>
         <div className="flex flex-col">
-          <div className="mt-5">
+          <div className="mt-2">
             <HypeButton
               projectId={projectData._id}
               initialHasHyped={isHype}
               hypeCount={projectData.hypeCount}
             />
           </div>
-          <div className="my-5">
+          <div className="my-2">
             <ul className="mt-2 flex flex-wrap items-center">
               {projectData.links.map((link, index) => (
                 <li
@@ -111,7 +111,7 @@ const View: React.FC<ViewProps> = ({ data }) => {
             ))}
           </div>
         </div>
-        <div className="mt-24">
+        <div className="my-10">
           <div dangerouslySetInnerHTML={{ __html: projectData.description }} />
         </div>
       </div>

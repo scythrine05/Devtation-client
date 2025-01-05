@@ -132,16 +132,32 @@ export const FlowBiteCarousel: React.FC<ViewCarouselProps> = ({
     <div className={`${className} relative`}>
       <Carousel
         slide={false}
-        leftControl={<BsArrowLeftSquareFill size={25} color="white" />}
-        rightControl={<BsArrowRightSquareFill size={25} color="white" />}
-        className="flowbite-carousel h-64 md:h-96 relative"
+        indicators={true}
+        leftControl={
+          <BsArrowLeftSquareFill
+            size={30}
+            color="white"
+            className="cursor-pointer"
+          />
+        }
+        rightControl={
+          <BsArrowRightSquareFill
+            size={30}
+            color="white"
+            className="cursor-pointer"
+          />
+        }
+        className="flowbite-carousel bg-black rounded-md"
       >
         {images.map((src, index) => (
-          <div key={index} className="h-64 md:h-96 relative">
+          <div
+            key={index}
+            className="relative flex justify-center items-center h-[300px] md:h-[400px] lg:h-[500px]"
+          >
             <img
               src={src}
               alt={`Slide ${index + 1}`}
-              className="object-contain w-full h-full"
+              className="object-contain w-full h-full rounded-md"
             />
           </div>
         ))}
