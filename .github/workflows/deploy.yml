@@ -56,4 +56,4 @@ jobs:
             sudo docker stop devtation-client-container || true
             sudo docker rm devtation-client-container || true
 
-            sudo docker run -d --name devtation-client-container -p 8080:80 ${{ secrets.DOCKER_USERNAME }}/devtation-client:latest
+            sudo docker run -d --name devtation-client-container -p 8080:81 ${{ secrets.DOCKER_USERNAME }}/devtation-client:latest
