@@ -15,6 +15,7 @@ import {
   DangerButton,
 } from "/src/components/Button";
 import TextInput, { TextArea } from "/src/components/Inputs/TextInput";
+import LazyImageComponent from "/src/components/custom/LazyImage";
 
 //Icons
 import { RiImageEditFill } from "react-icons/ri";
@@ -64,6 +65,7 @@ const Setting = ({ data }: ProfileData | any) => {
 
   const authRules = [usernameExists];
   const optionalFields = ["bio"];
+  const defaultProfileImage = "/images/profile-placeholder.webp";
 
   useEffect(() => {
     setFormData({ ...data, bio: data.bio || "" });
@@ -137,13 +139,10 @@ const Setting = ({ data }: ProfileData | any) => {
     <div className="md:mx-5 p-10">
       <div>
         <div className="w-32 h-w-32 md:h-40 md:w-40">
-          <img
+          <LazyImageComponent
+            fallback={defaultProfileImage}
             className="rounded-sm object-cover"
-            src={
-              imageUrl
-                ? imageUrl
-                : "https://img.freepik.com/free-photo/androgynous-avatar-non-binary-queer-person_23-2151100226.jpg?t=st=1726816029~exp=1726819629~hmac=5a5fadd081fb64009141798aaefcc4731c8d136f37395ec48f08693814236d93&w=826"
-            }
+            src={imageUrl ? imageUrl : defaultProfileImage}
             alt="author"
           />
         </div>

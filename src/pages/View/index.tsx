@@ -7,6 +7,7 @@ import { useAuth } from "/src/hooks/useAuth";
 
 import { FlowBiteCarousel } from "/src/components/Carousel";
 import HypeButton from "/src/components/Button/HypeButton";
+import LazyImageComponent from "/src/components/custom/LazyImage";
 
 // Icons
 import { RiExternalLinkLine } from "react-icons/ri";
@@ -25,9 +26,7 @@ interface ViewProps {
 
 const View: React.FC<ViewProps> = ({ data }) => {
   const { projectData, isHype } = data[0];
-  const defaultProfileImage =
-    "https://img.freepik.com/free-photo/androgynous-avatar-non-binary-queer-person_23-2151100226.jpg?t=st=1726816029~exp=1726819629~hmac=5a5fadd081fb64009141798aaefcc4731c8d136f37395ec48f08693814236d93&w=826";
-
+  const defaultProfileImage = "/images/profile-placeholder.webp";
   if (!projectData) {
     throw new Error("User not found or no user ID available");
   }
@@ -41,7 +40,8 @@ const View: React.FC<ViewProps> = ({ data }) => {
             className="flex items-center hover:text-[var(--color-devtiny-theme-light)] text-white"
           >
             <div className="w-10 h-10">
-              <img
+              <LazyImageComponent
+                fallback={defaultProfileImage}
                 className="rounded-sm w-full object-cover"
                 src={
                   projectData.authorProfileImage

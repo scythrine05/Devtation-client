@@ -3,11 +3,13 @@ import Card from "/src/components/Card";
 import { CardData } from "/src/types";
 
 import "./grid.style.css";
+import { sleep } from "/src/utils/sleep";
 
 const Grid = ({ data }: { data: CardData[] }) => {
   const [gridData, setGridData] = useState<CardData[]>([]);
 
   useEffect(() => {
+    sleep(3000);
     setGridData(Array.isArray(data) ? data : []);
   }, [data]);
 

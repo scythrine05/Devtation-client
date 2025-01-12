@@ -6,6 +6,7 @@ import Account from "/src/pages/Account";
 import Setting from "/src/pages/Setting";
 import View from "/src/pages/View";
 import Editor from "../pages/Editor";
+import NotFound from "/src/pages/NotFound";
 
 import ProtectedRoute from "./Protected.route";
 
@@ -39,6 +40,10 @@ const routes: RouteObject[] = [
   {
     path: "new",
     element: <ProtectedRoute children={<Editor />} />,
+  },
+  {
+    path: "*",
+    element: <NotFound />,
   },
 ];
 

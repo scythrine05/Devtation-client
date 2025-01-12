@@ -8,6 +8,7 @@ import Grid from "/src/components/Grid";
 import { SecondaryButton } from "/src/components/Button";
 import { FaPlus } from "react-icons/fa6";
 import { Link } from "react-router-dom";
+import LazyImageComponent from "/src/components/custom/LazyImage";
 
 interface CombinedData {
   userData: ProfileData;
@@ -17,6 +18,8 @@ interface CombinedData {
 interface AccountProps {
   data: CombinedData[];
 }
+
+const defaultProfileImage = "/images/profile-placeholder.webp";
 const Account: React.FC<AccountProps> = ({ data }) => {
   const { userData, projectsData } = data[0];
   return (
@@ -24,12 +27,13 @@ const Account: React.FC<AccountProps> = ({ data }) => {
       <div className="flex items-center flex-col md:flex-row md:mx-5 p-10 lg:w-2/3 xl:w-2/4 w-full">
         <div>
           <div className="w-32 h-w-32 md:h-40 md:w-40">
-            <img
+            <LazyImageComponent
+              fallback={defaultProfileImage}
               className="rounded-sm object-cover"
               src={
                 userData.profileImage
                   ? userData.profileImage
-                  : "https://img.freepik.com/free-photo/androgynous-avatar-non-binary-queer-person_23-2151100226.jpg?t=st=1726816029~exp=1726819629~hmac=5a5fadd081fb64009141798aaefcc4731c8d136f37395ec48f08693814236d93&w=826"
+                  : defaultProfileImage
               }
               alt="author"
             />

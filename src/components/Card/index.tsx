@@ -6,6 +6,7 @@ import { useAuth } from "/src/hooks/useAuth";
 import { OptionsDropdownComponent } from "../Dropdown";
 import { DangerButton, SecondaryButton } from "../Button";
 import { deleteProjectById } from "/src/apis/custom";
+import LazyImageComponent from "../custom/LazyImage";
 
 const CardComponent: React.FC<CardData> = ({
   _id,
@@ -21,10 +22,8 @@ const CardComponent: React.FC<CardData> = ({
   const [loading, setLoading] = useState(false);
   const { user } = useAuth();
   const isOwner = user?.uid === authorId;
-  const defaultThumbnail =
-    "https://cdn.pixabay.com/photo/2016/07/17/21/44/mountains-1524804_1280.png";
-  const defaultProfileImage =
-    "https://img.freepik.com/free-photo/androgynous-avatar-non-binary-queer-person_23-2151100226.jpg?t=st=1726816029~exp=1726819629~hmac=5a5fadd081fb64009141798aaefcc4731c8d136f37395ec48f08693814236d93&w=826";
+  const defaultProfileImage = "/images/profile-placeholder.webp";
+  const defaultThumbnail = "/images/image-placeholder.webp";
 
   const truncateText = (text: string, charLimit: number = 25) => {
     if (text.length > charLimit) {
@@ -57,7 +56,8 @@ const CardComponent: React.FC<CardData> = ({
                 className="flex items-center hover:text-[var(--color-devtiny-theme-light)] text-white"
               >
                 <div className="w-8 h-8">
-                  <img
+                  <LazyImageComponent
+                    fallback={defaultProfileImage}
                     className="rounded-sm w-full object-center"
                     src={
                       authorProfileImage
@@ -84,9 +84,10 @@ const CardComponent: React.FC<CardData> = ({
                 className="hover:text-[var(--color-devtiny-theme-light)] text-white"
               >
                 <div className="w-full">
-                  <img
-                    src={imageUrls ? imageUrls[0] : defaultThumbnail}
-                    alt="caption"
+                  <LazyImageComponent
+                    src={imageUrls?.[0] || defaultThumbnail}
+                    fallback={defaultThumbnail}
+                    alt="Example Image"
                     className="rounded-sm object-cover w-full h-44"
                   />
                 </div>
