@@ -14,8 +14,7 @@ import {
   SecondaryButton,
   DangerButton,
 } from "/src/components/Button";
-import TextInput, { TextArea } from "/src/components/Inputs/TextInput";
-import LazyImageComponent from "/src/components/custom/LazyImage";
+import TextInput, { TextArea } from "/src/components/Inputs/TextInput"
 
 //Icons
 import { RiImageEditFill } from "react-icons/ri";
@@ -139,8 +138,7 @@ const Setting = ({ data }: ProfileData | any) => {
     <div className="md:mx-5 p-10">
       <div>
         <div className="w-32 h-w-32 md:h-40 md:w-40">
-          <LazyImageComponent
-            fallback={defaultProfileImage}
+          <img
             className="rounded-sm object-cover"
             src={imageUrl || defaultProfileImage}
             alt="author"
