@@ -142,7 +142,7 @@ const Setting = ({ data }: ProfileData | any) => {
           <LazyImageComponent
             fallback={defaultProfileImage}
             className="rounded-sm object-cover"
-            src={imageUrl ? imageUrl : defaultProfileImage}
+            src={imageUrl || defaultProfileImage}
             alt="author"
           />
         </div>
